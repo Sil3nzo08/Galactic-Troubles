@@ -9,6 +9,7 @@ public class PlayerControlsNew : NetworkBehaviour
     [SerializeField] private InputReader inputReader;
     [SerializeField] private Mover mover;
     [SerializeField] private Aimer aimer;
+    [SerializeField] private FiringController firingController;
 
     public override void OnNetworkSpawn()
     {
@@ -16,6 +17,7 @@ public class PlayerControlsNew : NetworkBehaviour
 
         inputReader.MoveEvent += mover.UpdateMoveDirection;
         inputReader.AimEvent += aimer.AimWithMouse;
+        inputReader.FireEvent += firingController.UpdateFireState;
     }
 
     public override void OnNetworkDespawn()
@@ -24,6 +26,7 @@ public class PlayerControlsNew : NetworkBehaviour
 
         inputReader.MoveEvent -= mover.UpdateMoveDirection;
         inputReader.AimEvent -= aimer.AimWithMouse;
+        inputReader.FireEvent -= firingController.UpdateFireState;
     }
 
     private void Update()
@@ -37,6 +40,7 @@ public class PlayerControlsNew : NetworkBehaviour
     {
         if (!IsOwner) { return; }
 
-        aimer.Aim(Time.deltaTime);        
+        aimer.Aim(Time.deltaTime); 
+        firingController.FireProjectile();       
     } 
 }
