@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -15,7 +16,12 @@ public class Mover : MonoBehaviour
     [SerializeField] private float xMovementSpeed = 5f; // Horizontal
     [SerializeField] private float yMovementSpeed = 5f; // Vertical
 
+    // Return: new boosts
+    public event Func<Vector2> OnDirectionChange;
+
+
     private Vector2 normalisedDirection = Vector2.up;
+    
     // =============== Movement Functionality ===============
 
     public void UpdateMoveDirection(Vector2 newNormalisedDirection)
@@ -25,7 +31,10 @@ public class Mover : MonoBehaviour
 
     public void Move()
     {
-        rb.velocity = (transform.right * normalisedDirection.x * xMovementSpeed) + (transform.up * normalisedDirection.y * yMovementSpeed);
+        Vector2 boostMovement = (Vector2) OnDirectionChange?.Invoke();
+        if (boostMovement == null) { boostMovement = Vector2.one; }
+
+        rb.velocity = (transform.right * normalisedDirection.x * xMovementSpeed * boostMovement.x) + (transform.up * normalisedDirection.y * yMovementSpeed * boostMovement.y);
     }
 
 }
