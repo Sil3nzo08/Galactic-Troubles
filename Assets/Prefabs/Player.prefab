@@ -72,7 +72,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1772736449
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1573d696698aef148b8e63107caeff38, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -9940,6 +9940,9 @@ GameObject:
   - component: {fileID: 5690772131116194669}
   - component: {fileID: 1006405797294008120}
   - component: {fileID: 8402783469299763403}
+  - component: {fileID: 2947798545314032565}
+  - component: {fileID: 8785335423105164260}
+  - component: {fileID: 7331120696003010744}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -10053,7 +10056,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8524322273554050642}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1139a700629f0f7468410253748acd20, type: 3}
   m_Name: 
@@ -10073,3 +10076,47 @@ MonoBehaviour:
   boostFactor: 2
   maxRotationSpeed: 180
   fireCooldown: 0.25
+--- !u!114 &2947798545314032565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8524322273554050642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42ef1972940c471499d9ed19ce9076b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputReader: {fileID: 11400000, guid: c97bda5e18bf27240ba0756f1ff37eeb, type: 2}
+  mover: {fileID: 8785335423105164260}
+  aimer: {fileID: 7331120696003010744}
+--- !u!114 &8785335423105164260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8524322273554050642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20ec69ed661aaaf4393b867a572cc8de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 1006405797294008120}
+  xMovementSpeed: 5
+  yMovementSpeed: 5
+--- !u!114 &7331120696003010744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8524322273554050642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20e712854251d7442ae94599e7590689, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfTransform: {fileID: 3037048794162507396}
+  maxRotationSpeed: 500

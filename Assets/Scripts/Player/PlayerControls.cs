@@ -35,7 +35,6 @@ public class PlayerControls : NetworkBehaviour
     [Header("Firing")]
     [SerializeField] private float fireCooldown = 1f;   // How long to wait between each shot fired
 
-
     private Vector2 mousePos;
     private Vector2 movementInput;
     private float horizontalMovementSpeed;
