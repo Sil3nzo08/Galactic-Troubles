@@ -261,14 +261,3 @@ public abstract class EnemyAI : NetworkBehaviour
     protected abstract IEnumerator Charging();
 }
 
-/// <summary>
-/// The different states that an enemy can have whilst in-game.
-/// So far, there's scouting, attacking, retreating, and chasing.
-/// </summary>
-public enum EnemyState
-{
-    Scouting,
-    Attacking,
-    Retreating,
-    Charging
-}

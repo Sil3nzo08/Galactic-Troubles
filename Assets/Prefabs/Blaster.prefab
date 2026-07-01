@@ -4971,6 +4971,7 @@ GameObject:
   - component: {fileID: 3192845904360422973}
   - component: {fileID: 754006410519762979}
   - component: {fileID: 6280052163588503087}
+  - component: {fileID: 289899920340945658}
   m_Layer: 7
   m_Name: Blaster
   m_TagString: Untagged
@@ -5185,6 +5186,35 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 3.6, y: 1.5}
   m_Direction: 1
+--- !u!114 &289899920340945658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7513761188140098593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01a18874e7f68564ca1f5a3a9be21fe0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfTransform: {fileID: 5665025549687137822}
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 1088
+  rayInfos:
+  - positionTransform: {fileID: 5665025549687137822}
+    directionTransform: {fileID: 5665025549687137822}
+    rotationOffset: 0
+    sightDistance: 12
+  - positionTransform: {fileID: 5665025549687137822}
+    directionTransform: {fileID: 5665025549687137822}
+    rotationOffset: 30
+    sightDistance: 12
+  - positionTransform: {fileID: 5665025549687137822}
+    directionTransform: {fileID: 5665025549687137822}
+    rotationOffset: -30
+    sightDistance: 12
 --- !u!1 &7523138548704784929
 GameObject:
   m_ObjectHideFlags: 0
