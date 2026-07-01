@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using UnityEditor.Callbacks;
+using Unity.Netcode;
 using UnityEngine;
 
-public class BoostController : MonoBehaviour
+public class BoostController : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private ParticleSystem[] boostParticleSystems;
@@ -18,6 +18,7 @@ public class BoostController : MonoBehaviour
     public void UpdateBoostState(bool isBoostOn)
     {
         hasBoostOn = isBoostOn;
+        ApplyBoostEffects();
     }
 
     private Vector2 AmplifyForwardDirection()
@@ -41,5 +42,54 @@ public class BoostController : MonoBehaviour
         mover.OnDirectionChange -= AmplifyForwardDirection;
     }
 
+    // == Boost Effects ==
+    private void ApplyBoostEffects()
+    {
+        if (hasBoostOn)
+        {
+            EnableBoostEffects();
+            DisplayBoostEffectsServerRpc(true);
+        } 
+        else 
+        {
+            DisableBoostEffects();
+            DisplayBoostEffectsServerRpc(false);
+        }
+    }
 
+    private void EnableBoostEffects()
+    {
+        foreach (ParticleSystem ps in boostParticleSystems)
+        {
+            ps.gameObject.SetActive(true);
+            ps.Play();
+        }
+    }
+
+    private void DisableBoostEffects()
+    {
+        foreach (ParticleSystem ps in boostParticleSystems)
+        {
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        }
+    }
+
+    [ServerRpc]
+    private void DisplayBoostEffectsServerRpc(bool turnEffectsOn)
+    {
+        DisplayBoostEffectsClientRpc(turnEffectsOn);
+    }
+
+    [ClientRpc]
+    private void DisplayBoostEffectsClientRpc(bool turnEffectsOn)
+    {
+        if (turnEffectsOn)
+        {
+            EnableBoostEffects();
+        } 
+        else
+        {
+            DisableBoostEffects();
+        }
+    }
 }

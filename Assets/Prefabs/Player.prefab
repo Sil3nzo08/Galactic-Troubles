@@ -9984,7 +9984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2781621498
+  GlobalObjectIdHash: 2574057251
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -10153,6 +10153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a4c962b66687fe47957486385bc499d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostParticleSystems: []
+  boostParticleSystems:
+  - {fileID: 7709549736783179502}
+  - {fileID: 2997128473784431212}
   mover: {fileID: 8785335423105164260}
   boostFactor: 2

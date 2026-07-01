@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using UnityEditor.Callbacks;
 using UnityEngine;
 
 // Responsible for moving the gameObject
@@ -41,6 +39,7 @@ public class Mover : MonoBehaviour
             Debug.Log(boostMovement);
         }
 
+        // Apply movement now
         rb.velocity = (transform.right * normalisedDirection.x * xMovementSpeed * boostMovement.x) + (transform.up * normalisedDirection.y * yMovementSpeed * boostMovement.y);
     }
 
