@@ -28,9 +28,9 @@ public class Aimer : MonoBehaviour
     }
 
     // Aim
-    public void Aim(float waitPerCall)
+    public void ApplyAim(float waitPerCall)
     {
         // Apply rotation
-        selfTransform.rotation = Quaternion.RotateTowards(selfTransform.rotation, targetRotation, maxRotationSpeed * waitPerCall); // Could sub "waitPerCall" with "Time.deltaTime"
+        selfTransform.rotation = Quaternion.RotateTowards(selfTransform.rotation, targetRotation, maxRotationSpeed * waitPerCall);
     }
 }

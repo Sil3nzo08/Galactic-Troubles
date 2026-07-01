@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerControlsNew : NetworkBehaviour
 {
@@ -32,18 +33,28 @@ public class PlayerControlsNew : NetworkBehaviour
         inputReader.BoostEvent -= boostController.UpdateBoostState;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!IsOwner) { return; }
 
-        mover.Move();
+        if (mover.IsMouseCloseToSelf())
+        {
+            mover.StopMoving();
+        } 
+        else
+        {
+            mover.Move();
+        }
     }
 
     private void LateUpdate()
     {
         if (!IsOwner) { return; }
+        if (mover.IsMouseCloseToSelf()) { return; }
 
-        aimer.Aim(Time.deltaTime); 
+        aimer.AimWithMouse(Mouse.current.position.ReadValue());
+        aimer.ApplyAim(Time.deltaTime); 
+
         firingController.FireProjectile();       
     } 
 }
