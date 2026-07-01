@@ -16,6 +16,7 @@ public class AimController : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float maxRotationSpeed = 100f; // Maximum angular speed for rotation, in degrees per second.
+    [SerializeField] private float lookingAtTargetTolerance = 0.5f; // Angle threshold in degrees within which the object is considered to be facing the target.
 
 
     // =============== AIMING FUNCTIONALITY BELOW ===============
@@ -51,5 +52,24 @@ public class AimController : MonoBehaviour
     public void ApplyRotation(float waitPerCall)
     {
         selfTransform.rotation = Quaternion.RotateTowards(selfTransform.rotation, targetRotation, maxRotationSpeed * waitPerCall);
+    }
+
+    /// <summary>
+    /// Rotates the object toward the current target rotation until the angle difference is within tolerance, or the timeout is reached.
+    /// </summary>
+    /// <param name="waitPerCall">Time step used for each rotation step, typically delta time or a fixed wait interval.</param>
+    /// <param name="timeoutThreshold">Maximum time in seconds allowed for the rotation to complete.</param>
+    /// <returns>An IEnumerator that can be used with StartCoroutine.</returns>
+    public IEnumerator CompleteRotationTowardsTarget(float waitPerCall, float timeoutThreshold)
+    {
+        float totalRuntime = 0;
+
+        while (Quaternion.Angle(transform.rotation, targetRotation) > lookingAtTargetTolerance || totalRuntime > timeoutThreshold)
+        {
+            ApplyRotation(waitPerCall);
+            yield return new WaitForSeconds(waitPerCall);
+
+            totalRuntime += waitPerCall;
+        }
     }
 }

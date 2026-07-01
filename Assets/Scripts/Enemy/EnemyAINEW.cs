@@ -33,6 +33,8 @@ public abstract class EnemyAINEW : NetworkBehaviour
     /// <returns> Coroutine... </returns>
     protected abstract IEnumerator Charging();
 
+    protected abstract IEnumerator ScanSurroundings();
+
     protected void UpdateBehaviour(EnemyState previousValue, EnemyState newValue)
     {
         // Unsubscribe from current routine behaviour, and start new one.
@@ -65,8 +67,13 @@ public abstract class EnemyAINEW : NetworkBehaviour
     {
         if (!IsServer) { return; }
 
-        enemyState.OnValueChanged += UpdateBehaviour;
+        // You need some form of way to scan your surroundings
+        StartCoroutine(ScanSurroundings());
+
         enemyState.Value = EnemyState.Scouting;
+        StartCoroutine(Scouting());
+
+        enemyState.OnValueChanged += UpdateBehaviour;
     }
 
     public override void OnNetworkDespawn()
