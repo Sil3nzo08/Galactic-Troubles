@@ -9939,7 +9939,6 @@ GameObject:
   - component: {fileID: 1730452314455912794}
   - component: {fileID: 5690772131116194669}
   - component: {fileID: 1006405797294008120}
-  - component: {fileID: 8402783469299763403}
   - component: {fileID: 2947798545314032565}
   - component: {fileID: 8785335423105164260}
   - component: {fileID: 7331120696003010744}
@@ -10051,33 +10050,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &8402783469299763403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8524322273554050642}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1139a700629f0f7468410253748acd20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputReader: {fileID: 11400000, guid: c97bda5e18bf27240ba0756f1ff37eeb, type: 2}
-  rb: {fileID: 1006405797294008120}
-  serverProjectilePrefab: {fileID: 2915615826650439309, guid: 2a744dadfe548904ab1960562562d3a6, type: 3}
-  clientProjectilePrefab: {fileID: 9157049498108955850, guid: a922b24f58983ae46851cd036fa6f928, type: 3}
-  projectileSpawnPoint: {fileID: 8682968415645722782}
-  projectileFiringEffect: {fileID: 1308223548360796345}
-  boostParticleSystems:
-  - {fileID: 7709549736783179502}
-  - {fileID: 2997128473784431212}
-  baseHorizontalSpeed: 5
-  baseVerticalSpeed: 5
-  distanceToleranceForRotation: 0.3
-  boostFactor: 2
-  maxRotationSpeed: 180
-  fireCooldown: 0.25
 --- !u!114 &2947798545314032565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10091,8 +10063,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputReader: {fileID: 11400000, guid: c97bda5e18bf27240ba0756f1ff37eeb, type: 2}
-  mover: {fileID: 8785335423105164260}
-  aimer: {fileID: 7331120696003010744}
+  moveController: {fileID: 8785335423105164260}
+  aimController: {fileID: 7331120696003010744}
   firingController: {fileID: 6075893137244240923}
   boostController: {fileID: 5621485468164255544}
 --- !u!114 &8785335423105164260
@@ -10142,7 +10114,7 @@ MonoBehaviour:
   clientProjectilePrefab: {fileID: 9157049498108955850, guid: a922b24f58983ae46851cd036fa6f928, type: 3}
   projectileSpawnPoint: {fileID: 8682968415645722782}
   projectileSpawnRotation: {fileID: 8682968415645722782}
-  fireCooldown: 1
+  fireCooldown: 0.4
 --- !u!114 &5621485468164255544
 MonoBehaviour:
   m_ObjectHideFlags: 0

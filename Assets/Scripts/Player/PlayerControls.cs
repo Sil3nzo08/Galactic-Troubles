@@ -1,287 +1,83 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Scripting.APIUpdating;
+using UnityEngine.InputSystem;
 
+/// <summary>
+/// Routes local player input to movement, aiming, firing, and boost systems for the owning player. Defines how a player interacts with the game world.
+/// </summary>
+/// <remarks>
+/// Subscribes to input events on spawn, unsubscribes on despawn,
+/// and performs owner-only update dispatch for movement, aiming, and firing.
+/// </remarks>
 public class PlayerControls : NetworkBehaviour
 {
     [Header("References")]
-    [SerializeField] private InputReader inputReader;
-    [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private GameObject serverProjectilePrefab;
-    [SerializeField] private GameObject clientProjectilePrefab;
-    [SerializeField] private Transform projectileSpawnPoint;
-    [SerializeField] private GameObject projectileFiringEffect;
-    [SerializeField] private ParticleSystem[] boostParticleSystems;
-    //[SerializeField] private TrailRenderer[] boostTrails;
+    [SerializeField] private InputReader inputReader; // Reads input events from the player's input system.
+    [SerializeField] private MoveController moveController; // Movement controller that receives direction updates and performs Rigidbody2D movement.
+    [SerializeField] private AimController aimController; // Aiming controller that computes and applies target rotation.
+    [SerializeField] private FiringController firingController; // Firing controller that manages projectile firing and cooldowns.
+    [SerializeField] private BoostController boostController; // Boost controller that applies forward boost and visual effects.
 
-    [Header("==== Settings ====")]
-
-    [Header("Movement")]
-    [SerializeField] private float baseHorizontalSpeed = 5f;
-    [SerializeField] private float baseVerticalSpeed = 5f;
-    [SerializeField] private float distanceToleranceForRotation = 0.3f;
-
-    [Header("Boosting")]
-    [SerializeField] private float boostFactor = 2f;
-
-    [Header("Rotation")]
-    [SerializeField] private float maxRotationSpeed = 2f;
-
-    [Header("Firing")]
-    [SerializeField] private float fireCooldown = 1f;   // How long to wait between each shot fired
-
-    private Vector2 mousePos;
-    private Vector2 movementInput;
-    private float horizontalMovementSpeed;
-    private float verticalMovementSpeed;
-    private float currentBoost;
-    private bool isFiring = false;
-    private float currentCooldownLeft;
-
+    /// <summary>
+    /// Subscribes input events when this player object is spawned for the local owner.
+    /// </summary>
     public override void OnNetworkSpawn()
     {
         if (!IsOwner) { return; }
 
-        horizontalMovementSpeed = baseHorizontalSpeed;
-        verticalMovementSpeed = baseVerticalSpeed;
-
-        inputReader.MoveEvent += Move;
-        inputReader.AimEvent += Aim;
-        inputReader.BoostEvent += Boost;
-        inputReader.FireEvent += FireState;
+        inputReader.MoveEvent += moveController.UpdateMoveDirection;
+        inputReader.AimEvent += aimController.AimAtMouse;
+        inputReader.FireEvent += firingController.UpdateFireState;
+        inputReader.BoostEvent += boostController.UpdateBoostState;
     }
 
+    /// <summary>
+    /// Unsubscribes input events when this player object is despawned for the local owner.
+    /// </summary>
     public override void OnNetworkDespawn()
     {
         if (!IsOwner) { return; }
 
-        inputReader.MoveEvent -= Move;
-        inputReader.AimEvent -= Aim;
-        inputReader.BoostEvent -= Boost;
-        inputReader.FireEvent -= FireState;
+        inputReader.MoveEvent -= moveController.UpdateMoveDirection;
+        inputReader.AimEvent -= aimController.AimAtMouse;
+        inputReader.FireEvent -= firingController.UpdateFireState;
+        inputReader.BoostEvent -= boostController.UpdateBoostState;
     }
 
-    private void Update()
-    {
-        if (!IsOwner) { return; }
-
-        if (currentCooldownLeft > 0)
-        {
-            currentCooldownLeft -= Time.deltaTime;
-        }
-
-        FiringProjectile();
-    }
-
+    /// <summary>
+    /// Handles owner-only physics movement updates.
+    /// </summary>
     private void FixedUpdate()
     {
         if (!IsOwner) { return; }
 
-        if (!MouseClose())
+        if (moveController.IsMouseCloseToSelf())
         {
-            rb.velocity = (transform.up * (movementInput.y + currentBoost) * verticalMovementSpeed) +
-                        (transform.right * movementInput.x * horizontalMovementSpeed);
-        }
+            moveController.StopMoving();
+        } 
         else
         {
-            rb.velocity = Vector2.zero;
+            moveController.Move();
         }
     }
 
+    /// <summary>
+    /// Handles owner-only aiming and firing updates after all other updates.
+    /// </summary>
     private void LateUpdate()
     {
         if (!IsOwner) { return; }
 
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, calculateTargetRotation(mousePos), maxRotationSpeed * Time.deltaTime);
-    }
+        // Doesn't rotate if mouse is too close to self (the player)
+        if (moveController.IsMouseCloseToSelf()) { return; }
 
-    /// <summary>
-    /// Sets the moving direction based on the input provided, so that this script can utilise it for movement appropriately
-    /// </summary>
-    /// <param name="direction"> The normalised direction given from the input action map</param>
-    private void Move(Vector2 direction)
-    {
-        movementInput = direction;
-    }
+        // Aim
+        aimController.AimAtMouse(Mouse.current.position.ReadValue());
+        aimController.ApplyRotation(Time.deltaTime); 
 
-    /// <summary>
-    /// Responsible for retrieving the mouse's position and updating the "mousePos" variable here.
-    /// </summary>
-    /// <param name="mousePos">The mouse position</param>
-    private void Aim(Vector2 mousePos)
-    {
-        this.mousePos = (Vector2)Camera.main.ScreenToWorldPoint(mousePos);
-    }
-
-    /// <summary>
-    /// Modifies the currentBoost for the player, and based on the boolean based in, will have code that increases/decreases the boost.
-    /// Modifies currentBoost specifically. Visual effects included.
-    /// </summary>
-    /// <param name="turnOn"> true means to turn the boost on, and false means to turn the boost off</param>
-    private void Boost(bool turnOn)
-    {
-        if (turnOn)
-        {
-            currentBoost = boostFactor;
-            DisplayBoostEffectsServerRpc(true);
-        }
-        else
-        {
-            currentBoost = 0;
-            DisplayBoostEffectsServerRpc(false);
-        }
-    }
-
-    /// <summary>
-    /// Calculates and returns the quaternion needed to face the target's position
-    /// </summary>
-    /// <param name="targetPos">The position that the returned Quaternion will face </param>
-    /// <returns>The quaternion that faces the target's position </returns>
-    private Quaternion calculateTargetRotation(Vector3 targetPos)
-    {
-        Vector2 directionToLookAt = targetPos - transform.position;
-        float zDegrees = Mathf.Atan2(directionToLookAt.y, directionToLookAt.x) * (180 / Mathf.PI);
-
-        Quaternion targetQuaternionRotation = Quaternion.Euler(0, 0, zDegrees - 90);
-        return targetQuaternionRotation;
-    }
-
-    /// <summary>
-    /// Returns whether the mouse's position, which you need to pass in, is close to the player's position, with tolerance distance determine through 
-    /// "distanceToleranceForRotation"
-    /// </summary>
-    /// <returns> 
-    /// 1. true if the distance between the mouse's position and the player's position is greater than or equal to the tolerance distance 
-    /// 2. false if the distance between the mouse's position and the player's position is less than the tolerance distance 
-    /// </returns>
-    private bool MouseClose()
-    {
-        float dist = Vector3.Distance(mousePos, transform.position);
-
-        if (dist > distanceToleranceForRotation)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-    /// <summary>
-    /// Updates the isFiring state, letting us know if the player is currently deciding to fire or not.
-    /// </summary>
-    /// <param name="isFiring"> True if the player is firing, and false otherwise </param>
-    private void FireState(bool isFiring)
-    {
-        this.isFiring = isFiring;
-    }
-
-    /// <summary>
-    /// A ServerRPC call responsible for spawning the projectile server-side, and ensuring all clients also 
-    /// have the projectile spawn on their screens too.
-    /// </summary>
-    [ServerRpc]
-    private void SpawnProjectileServerRpc()
-    {
-        GameObject projectileInstance = Instantiate(serverProjectilePrefab, projectileSpawnPoint.position, transform.rotation);
-        if (projectileInstance.TryGetComponent(out ProjectileHits projectileHits))
-        {
-            projectileHits.SetSourceShooter(gameObject);
-        }
-
-        SpawnProjectileClientRpc();
-    }
-
-    /// <summary>
-    /// A ClientRPC call responsible for ensuring the projectile gets spawned on their screen, and that they see the firing 
-    /// animation go off of the spaceship whose firing.
-    /// </summary>
-    [ClientRpc]
-    private void SpawnProjectileClientRpc()
-    {
-        if (IsOwner) { return; }
-
-        Instantiate(clientProjectilePrefab, projectileSpawnPoint.position, transform.rotation);
-        projectileFiringEffect.SetActive(true);
-    }
-
-    /// <summary>
-    /// Fires the projectile given the user is firing and that the cooldown is complete. It spawns the owner's projectile first, before having
-    /// it run server-side to ensure gameplay is enjoyable.
-    /// </summary>
-    private void FiringProjectile()
-    {
-        if (isFiring)
-        {
-            if (currentCooldownLeft <= 0)
-            {
-                Instantiate(clientProjectilePrefab, projectileSpawnPoint.position, transform.rotation);
-                projectileFiringEffect.SetActive(true);
-                currentCooldownLeft = fireCooldown;
-
-                SpawnProjectileServerRpc();
-            }
-        }
-    }
-
-    /// ==================== BOOSTING EFFECTS =================
-    /// <summary>
-    /// A ServerRPC call responsible for having all the clients see the boost effect visible on their screen when the player boosts.
-    /// </summary>
-    /// <param name="turnOn"> true means turn on the boost effects, and false means turn them off </param>
-    [ServerRpc]
-    private void DisplayBoostEffectsServerRpc(bool turnOn)
-    {
-        DisplayBoostEffectsClientRpc(turnOn);
-    }
-
-    /// <summary>
-    /// The ClientRPC call to turn on/off the boost effects, on the client-side
-    /// </summary>
-    /// <param name="turnOn"> true means turn on the boost effects, and false means turn them off </param>
-    [ClientRpc]
-    private void DisplayBoostEffectsClientRpc(bool turnOn)
-    {
-        if (turnOn)
-        {
-            EnableBoostEffects();
-        }
-        else
-        {
-            DisableBoostEffects();
-        }
-    }
-
-    /// <summary>
-    /// Enables the boost particle system effects
-    /// </summary>
-    private void EnableBoostEffects()
-    {
-        foreach (ParticleSystem system in boostParticleSystems)
-        {
-            if (system.gameObject.activeInHierarchy == false)
-            {
-                system.gameObject.SetActive(true);
-            }
-
-            system.Play();
-        }
-    }
-
-    /// <summary>
-    /// Disables the boost particle system effects
-    /// </summary>
-    private void DisableBoostEffects()
-    {
-        foreach (ParticleSystem system in boostParticleSystems)
-        {
-            system.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-        }
-    }
+        // Fire
+        firingController.FireProjectile();       
+    } 
 }
