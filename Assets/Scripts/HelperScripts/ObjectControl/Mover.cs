@@ -33,7 +33,7 @@ public class Mover : MonoBehaviour
     public void Move()
     {
         // Apply boosts based on the subscribers
-        Vector2 boostMovement = Vector2.one;
+        Vector2 boostMovement = Vector2.zero;
         foreach (Func<Vector2> subscriber in OnDirectionChange.GetInvocationList())
         {
             Vector2 returnVal = subscriber.Invoke();
@@ -41,7 +41,7 @@ public class Mover : MonoBehaviour
         }
 
         // Apply movement now
-        rb.velocity = (transform.right * normalisedDirection.x * xMovementSpeed * boostMovement.x) + (transform.up * normalisedDirection.y * yMovementSpeed * boostMovement.y);
+        rb.velocity = (transform.right * (normalisedDirection.x + boostMovement.x) * xMovementSpeed) + (transform.up * (normalisedDirection.y + boostMovement.y) * yMovementSpeed);
     }
 
     public bool IsMouseCloseToSelf()

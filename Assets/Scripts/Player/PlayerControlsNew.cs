@@ -18,7 +18,7 @@ public class PlayerControlsNew : NetworkBehaviour
         if (!IsOwner) { return; }
 
         inputReader.MoveEvent += mover.UpdateMoveDirection;
-        inputReader.AimEvent += aimer.AimWithMouse;
+        inputReader.AimEvent += aimer.AimAtMouse;
         inputReader.FireEvent += firingController.UpdateFireState;
         inputReader.BoostEvent += boostController.UpdateBoostState;
     }
@@ -28,7 +28,7 @@ public class PlayerControlsNew : NetworkBehaviour
         if (!IsOwner) { return; }
 
         inputReader.MoveEvent -= mover.UpdateMoveDirection;
-        inputReader.AimEvent -= aimer.AimWithMouse;
+        inputReader.AimEvent -= aimer.AimAtMouse;
         inputReader.FireEvent -= firingController.UpdateFireState;
         inputReader.BoostEvent -= boostController.UpdateBoostState;
     }
@@ -52,8 +52,8 @@ public class PlayerControlsNew : NetworkBehaviour
         if (!IsOwner) { return; }
         if (mover.IsMouseCloseToSelf()) { return; }
 
-        aimer.AimWithMouse(Mouse.current.position.ReadValue());
-        aimer.ApplyAim(Time.deltaTime); 
+        aimer.AimAtMouse(Mouse.current.position.ReadValue());
+        aimer.ApplyRotation(Time.deltaTime); 
 
         firingController.FireProjectile();       
     } 

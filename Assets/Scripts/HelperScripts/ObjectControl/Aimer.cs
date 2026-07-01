@@ -12,7 +12,7 @@ public class Aimer : MonoBehaviour
 
     private Quaternion targetRotation = Quaternion.identity; 
 
-    public void AimWithMouse(Vector2 mouseInput)
+    public void AimAtMouse(Vector2 mouseInput)
     {
         Vector2 mousePos = (Vector2) Camera.main.ScreenToWorldPoint(mouseInput);
         CalculateTargetRotation(mousePos);
@@ -28,7 +28,7 @@ public class Aimer : MonoBehaviour
     }
 
     // Aim
-    public void ApplyAim(float waitPerCall)
+    public void ApplyRotation(float waitPerCall)
     {
         // Apply rotation
         selfTransform.rotation = Quaternion.RotateTowards(selfTransform.rotation, targetRotation, maxRotationSpeed * waitPerCall);
