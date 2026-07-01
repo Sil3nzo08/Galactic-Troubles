@@ -31,8 +31,15 @@ public class Mover : MonoBehaviour
 
     public void Move()
     {
-        Vector2 boostMovement = (Vector2) OnDirectionChange?.Invoke();
-        if (boostMovement == null) { boostMovement = Vector2.one; }
+        // Apply boosts based on the subscribers
+        Vector2 boostMovement = Vector2.one;
+        foreach (Func<Vector2> subscriber in OnDirectionChange.GetInvocationList())
+        {
+            Vector2 returnVal = subscriber.Invoke();
+            boostMovement += returnVal;
+
+            Debug.Log(boostMovement);
+        }
 
         rb.velocity = (transform.right * normalisedDirection.x * xMovementSpeed * boostMovement.x) + (transform.up * normalisedDirection.y * yMovementSpeed * boostMovement.y);
     }

@@ -14,7 +14,7 @@ public class BoostController : MonoBehaviour
     [SerializeField] private float boostFactor = 2f; // In the forward A.K.A Vector2.up direction
 
     // ======================= Implementation =======================
-    private bool hasBoostOn;
+    private bool hasBoostOn = false;
     public void UpdateBoostState(bool isBoostOn)
     {
         hasBoostOn = isBoostOn;
@@ -24,10 +24,10 @@ public class BoostController : MonoBehaviour
     {
         if (hasBoostOn)
         {
-            return new Vector2(1, boostFactor);
+            return new Vector2(0, boostFactor);
         } else
         {
-            return Vector2.one;
+            return Vector2.zero;
         }
     }
 
