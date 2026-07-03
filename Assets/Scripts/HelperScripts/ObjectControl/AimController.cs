@@ -64,7 +64,7 @@ public class AimController : MonoBehaviour
     {
         float totalRuntime = 0;
 
-        while (Quaternion.Angle(transform.rotation, targetRotation) > lookingAtTargetTolerance || totalRuntime > timeoutThreshold)
+        while (Quaternion.Angle(transform.rotation, targetRotation) > lookingAtTargetTolerance && totalRuntime <= timeoutThreshold)
         {
             ApplyRotation(waitPerCall);
             yield return new WaitForSeconds(waitPerCall);

@@ -69,7 +69,7 @@ public class BlasterAI : EnemyAINEW
 
         while (true)
         {
-            // Looking around functionality
+            // === Looking around functionality ===
             for (int i = 0; i < 3; i++)
             {
                 // Generate a random direction (via picking a random spot on the unit circle around the blaster)
@@ -86,7 +86,7 @@ public class BlasterAI : EnemyAINEW
                 yield return new WaitForSeconds(3f);
             }
 
-            // Moving forward
+            // === Moving forward functionality ===
             yield return StartCoroutine(moveTowardsTarget(waitPerCall, 10f));
         }
     }
@@ -106,6 +106,8 @@ public class BlasterAI : EnemyAINEW
             yield return new WaitForSeconds(waitPerCall);
             currDuration += waitPerCall;
         }
+
+        moveController.StopMoving();
     }
     
 
