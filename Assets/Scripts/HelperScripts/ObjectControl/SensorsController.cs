@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+/// <summary>
+/// Performs raycasts in multiple directions to detect objects on specified layers.
+/// </summary>
+/// <remarks>
+/// Uses pre-configured ray directions and distances to scan the environment.
+/// Results are returned in discovery order up to a specified maximum.
+/// </remarks>
 public class SensorsController : MonoBehaviour
 {
     [Header("Settings")] 
