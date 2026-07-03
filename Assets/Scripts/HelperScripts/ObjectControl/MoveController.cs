@@ -87,4 +87,36 @@ public class MoveController : MonoBehaviour
     {
         rb.velocity = Vector2.zero;
     }
+
+    /// <summary>
+    /// Evaluates the proximity of another object relative to this object (the one stored in "selfTransform").
+    /// </summary>
+    /// <param name="otherTrans">Transform of the object to check distance to.</param>
+    /// <param name="idealDistance">Desired distance between objects.</param>
+    /// <param name="distanceTolerance">Acceptable deviation from the ideal distance.</param>
+    /// <returns>A <see cref="ProximityStatus"/> indicating if the object is too close, at ideal distance, or too far.</returns>
+    public ProximityStatus ObjectProximityToSelf(Transform otherTrans, float idealDistance, float distanceTolerance) {
+        float distance = Vector2.Distance(selfTransform.position, otherTrans.position);
+
+        if (distance < (idealDistance - distanceTolerance)) {
+            // Too close
+            return ProximityStatus.TooClose;
+        } else if (distance > (idealDistance + distanceTolerance)) {
+            // Too far
+            return ProximityStatus.TooFar;
+        } else {
+            // Goldilocks zone
+            return ProximityStatus.Ideal;
+        }
+    }
+}
+
+/// <summary>
+/// Describes the proximity relationship between two objects relative to an ideal distance.
+/// </summary>
+public enum ProximityStatus 
+{
+    TooClose, // Closer than ideal distance minus tolerance.
+    Ideal, // Within the acceptable range around ideal distance.
+    TooFar // Farther than ideal distance plus tolerance.   
 }

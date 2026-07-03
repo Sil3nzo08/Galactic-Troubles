@@ -78,6 +78,6 @@ public class PlayerControls : NetworkBehaviour
         aimController.ApplyRotation(Time.deltaTime); 
 
         // Fire
-        firingController.FireProjectile();       
+        firingController.FireProjectileWithCooldown();       
     } 
 }

@@ -19,13 +19,12 @@ public class BlasterAI : EnemyAINEW
 
     [Header("Settings")]
     [SerializeField] protected float switchTargetCooldown = 3f;
-    [SerializeField] protected float firingDistance = 12f;
     [SerializeField] protected float scanSurroundingsRate = 2f;
+    [SerializeField] protected float firingDistance = 12f;
 
 
     // ==================== Implementation ====================
     private GameObject target;
-
     protected override IEnumerator ScanSurroundings()
     {
         while (true)
@@ -46,9 +45,53 @@ public class BlasterAI : EnemyAINEW
         }
     }
 
+    private float currentFiringCooldown = 0f;
     protected override IEnumerator Attacking()
     {
-        throw new System.NotImplementedException();
+        boostController.UpdateBoostState(false);
+
+        while (true)
+        {
+            // Aim at target
+            aimController.CalculateTargetRotation(target.transform.position);
+            aimController.ApplyRotation(0.1f);
+
+            // Move/Strafe
+            ProximityStatus pStatus = moveController.ObjectProximityToSelf(target.transform, 10f, 3f);
+
+            switch (pStatus)
+            {
+                case ProximityStatus.Ideal:
+                    // Strafing left/right (randomly)
+                    Vector2 strafeDir = (Random.Range(0, 2) == 0) ? Vector2.left : Vector2.right;
+                    moveController.UpdateMoveDirection(strafeDir.normalized);
+                    moveController.Move();
+                    break;
+                
+                case ProximityStatus.TooClose:
+                    // Move backwards
+                    moveController.UpdateMoveDirection(Vector2.down);
+                    moveController.Move();
+                    break;
+                
+                case ProximityStatus.TooFar:
+                    // Move forwards
+                    moveController.UpdateMoveDirection(Vector2.up);
+                    moveController.Move();
+                    break;
+            }
+
+            // Firing
+            ProximityStatus fireStatus = moveController.ObjectProximityToSelf(target.transform, 6f, 6f); // Essentially simulates 12 fire range
+            
+            if (fireStatus == ProximityStatus.Ideal)
+            {
+                firingController.TryBurstFire();
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
+
     }
 
     protected override IEnumerator Charging()

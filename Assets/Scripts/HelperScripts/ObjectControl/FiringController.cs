@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -20,12 +21,14 @@ public class FiringController : NetworkBehaviour
 
     [Header("Settings")]
     [SerializeField] private float fireCooldown = 1f;
+    [SerializeField] private BurstFireInfo burstFireInfo;
 
 
     // =============== FIRING FUNCTIONALITY BELOW ===============
     private bool isFiring = false;
     private float currentCooldownLeft;
 
+    // ======== EXPOSED FUNCTIONALITY =========
     /// <summary>
     /// Updates whether firing input is currently active.
     /// </summary>
@@ -38,18 +41,35 @@ public class FiringController : NetworkBehaviour
     /// <summary>
     /// Attempts to fire a projectile if input is active and cooldown has elapsed.
     /// </summary>
-    public void FireProjectile()
+    public void FireProjectileWithCooldown()
     {
         // Can't fire projectile yet
         if (!isFiring || currentCooldownLeft > 0) { return; }
 
         // Fire projectile and update cooldown
-        Instantiate(clientProjectilePrefab, projectileSpawnPoint.position, projectileSpawnRotation.rotation);
+        FireProjectile();
+        currentCooldownLeft = fireCooldown;
+    }
+
+    public void TryBurstFire()
+    {
+        if (currentCooldownLeft > 0) { return; }    
 
         currentCooldownLeft = fireCooldown;
+        StartCoroutine(BurstFire());
+    }
 
-        // Tell server to also fire a projectile
-        SpawnProjectileServerRpc();
+
+    // ======== HIDDEN FUNCTIONALITY =========
+
+
+    private IEnumerator BurstFire()
+    {
+        for (int i = 0; i < burstFireInfo.burstAmount; i++)
+        {
+            FireProjectile();
+            yield return new WaitForSeconds(burstFireInfo.timeBetweenShots);
+        }
     }
 
     /// <summary>
@@ -80,6 +100,15 @@ public class FiringController : NetworkBehaviour
         SpawnProjectileClientRpc();
     }
 
+    private void FireProjectile()
+    {
+        // Fire projectile (this will happen on the host/owner's side, then update for all other clients via the RPC call below)
+        Instantiate(clientProjectilePrefab, projectileSpawnPoint.position, projectileSpawnRotation.rotation);
+
+        // Tell server to also fire a projectile
+        SpawnProjectileServerRpc();
+    }
+
     // =================== Update loop ===================
     /// <summary>
     /// Reduces the cooldown timer if above 0 (cooldown in effect).
@@ -92,3 +121,10 @@ public class FiringController : NetworkBehaviour
         }
     }
 }
+
+[System.Serializable] 
+public struct BurstFireInfo
+{
+    public int burstAmount;
+    public float timeBetweenShots;
+} 
