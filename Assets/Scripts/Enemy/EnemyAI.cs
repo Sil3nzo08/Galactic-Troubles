@@ -204,6 +204,7 @@ public abstract class EnemyAI : NetworkBehaviour
     /// <param name="newValue"> The new state the enemy ship has transitioned to </param>
     protected void UpdateBehaviour(EnemyState previousValue, EnemyState newValue)
     {
+        
         // Unsubscribe from current routine behaviour, and start new one.
         if (currentBehaviour != null)
         {

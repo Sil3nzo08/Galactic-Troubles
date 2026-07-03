@@ -20,10 +20,9 @@ public class FiringController : NetworkBehaviour
     [SerializeField] private Transform projectileSpawnRotation; // Spawn rotation used when instantiating projectiles.
 
     [Header("Settings")]
-    [SerializeField] private float fireCooldown = 1f;
-    [SerializeField] private BurstFireInfo burstFireInfo;
-
-
+    [SerializeField] private float fireCooldown = 1f; // Time in seconds between allowed single projectile fires. Note: Should be longer than the total burst duration (burstAmount * timeBetweenShots) to prevent burst overlapping. 
+    [SerializeField] private BurstFireInfo burstFireInfo; // Configuration for burst firing behavior.
+ 
     // =============== FIRING FUNCTIONALITY BELOW ===============
     private bool isFiring = false;
     private float currentCooldownLeft;
@@ -51,6 +50,11 @@ public class FiringController : NetworkBehaviour
         currentCooldownLeft = fireCooldown;
     }
 
+    /// <summary>
+    /// Attempts to fire a burst of projectiles if the cooldown has elapsed.
+    /// <para><strong>Note:</strong> <see cref="fireCooldown"/> should be set longer than the total burst duration 
+    /// (burstAmount × timeBetweenShots) to prevent consecutive bursts from overlapping.</para>
+    /// </summary>
     public void TryBurstFire()
     {
         if (currentCooldownLeft > 0) { return; }    
@@ -59,10 +63,13 @@ public class FiringController : NetworkBehaviour
         StartCoroutine(BurstFire());
     }
 
-
     // ======== HIDDEN FUNCTIONALITY =========
-
-
+    /// <summary>
+    /// Fires multiple projectiles in rapid succession according to burst configuration.
+    /// </summary>
+    /// <remarks>
+    /// The number of projectiles and delay between them are defined in <see cref="burstFireInfo"/>.
+    /// </remarks>
     private IEnumerator BurstFire()
     {
         for (int i = 0; i < burstFireInfo.burstAmount; i++)
@@ -100,6 +107,9 @@ public class FiringController : NetworkBehaviour
         SpawnProjectileClientRpc();
     }
 
+    /// <summary>
+    /// Fires a single projectile and synchronizes it across the network.
+    /// </summary>
     private void FireProjectile()
     {
         // Fire projectile (this will happen on the host/owner's side, then update for all other clients via the RPC call below)
@@ -122,9 +132,12 @@ public class FiringController : NetworkBehaviour
     }
 }
 
+/// <summary>
+/// Configuration data for burst firing behavior.
+/// </summary>
 [System.Serializable] 
 public struct BurstFireInfo
 {
-    public int burstAmount;
-    public float timeBetweenShots;
+    public int burstAmount; // Number of projectiles to fire in a single burst.
+    public float timeBetweenShots; // Time in seconds between consecutive shots within a burst.
 } 

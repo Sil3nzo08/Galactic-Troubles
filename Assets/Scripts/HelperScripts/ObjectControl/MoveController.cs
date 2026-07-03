@@ -15,13 +15,14 @@ using UnityEngine.InputSystem;
 public class MoveController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private Transform selfTransform; // The one that is moving
+    [SerializeField] private Rigidbody2D rb; // Rigidbody2D component used to apply movement velocity.
+    [SerializeField] private Transform selfTransform; // Transform component that is being moved by this controller.
 
     [Header("Settings")]
-    [SerializeField] private float xMovementSpeed = 5f; // Horizontal
-    [SerializeField] private float yMovementSpeed = 5f; // Vertical
-    [SerializeField] private float atMouseTolerance = 10f; // Decides when the ship stops when it reaches the mouse
+    [SerializeField] private float xMovementSpeed = 5f; // Movement speed in the horizontal (right) direction, in units per second.
+    [SerializeField] private float yMovementSpeed = 5f; // Movement speed in the vertical (up) direction, in units per second.
+    [SerializeField] private float atMouseTolerance = 10f; // Screen-space distance tolerance for determining when the mouse is close enough to the object to trigger stopping.
+    [SerializeField] private float strafeCooldown = 10f; // Cooldown time in seconds between allowed strafe direction changes.
 
     /// <summary>
     /// Fired when the direction of the movement changes/updates. Subscribers should return a Vector2, which represents an amplification of forward normalised direction. 
@@ -39,6 +40,7 @@ public class MoveController : MonoBehaviour
     public void UpdateMoveDirection(Vector2 newNormalisedDirection)
     {   
         normalisedDirection = newNormalisedDirection;
+        Debug.Log(normalisedDirection);
     }
 
     /// <summary>
@@ -98,17 +100,50 @@ public class MoveController : MonoBehaviour
     public ProximityStatus ObjectProximityToSelf(Transform otherTrans, float idealDistance, float distanceTolerance) {
         float distance = Vector2.Distance(selfTransform.position, otherTrans.position);
 
-        if (distance < (idealDistance - distanceTolerance)) {
+        if (distance < (idealDistance - distanceTolerance)) 
+        {
             // Too close
             return ProximityStatus.TooClose;
-        } else if (distance > (idealDistance + distanceTolerance)) {
+        } 
+        else if (distance > (idealDistance + distanceTolerance)) 
+        {
             // Too far
             return ProximityStatus.TooFar;
-        } else {
+        } 
+        else 
+        {
             // Goldilocks zone
             return ProximityStatus.Ideal;
         }
     }
+
+    // ==== FOR STRAFING CAPABILITIES ====
+    private float currStrafeCooldown = 0f; // Remaining cooldown time before the next strafe direction change is allowed.
+
+    /// <summary>
+    /// Returns a random strafe direction (left or right) if the strafe cooldown has elapsed.
+    /// </summary>
+    /// <returns>A normalized left or right vector, or <see cref="Vector2.zero"/> if cooldown is still active.</returns>
+    public Vector2 GetAStrafeDirection() 
+    {
+        if (currStrafeCooldown > 0) { return Vector2.zero; }
+
+        currStrafeCooldown = strafeCooldown;
+        return (UnityEngine.Random.Range(0, 2) == 0) ? Vector2.right : Vector2.left;
+    }
+
+    /// <summary>
+    /// Resets the strafe cooldown timer to zero, allowing immediate strafe direction changes.
+    /// </summary>
+    public void ResetStrafeCooldown() {
+        currStrafeCooldown = 0;
+    }
+
+
+    private void Update()
+    {
+        currStrafeCooldown -= Time.deltaTime;       
+    } 
 }
 
 /// <summary>

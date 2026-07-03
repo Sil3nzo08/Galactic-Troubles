@@ -20,7 +20,6 @@ public class BlasterAI : EnemyAINEW
     [Header("Settings")]
     [SerializeField] protected float switchTargetCooldown = 3f;
     [SerializeField] protected float scanSurroundingsRate = 2f;
-    [SerializeField] protected float firingDistance = 12f;
 
 
     // ==================== Implementation ====================
@@ -45,51 +44,61 @@ public class BlasterAI : EnemyAINEW
         }
     }
 
-    private float currentFiringCooldown = 0f;
     protected override IEnumerator Attacking()
     {
+        // In function settings...
+        float waitPerCall = 0.1f;
+
+        // Stop boosting (if it was boosting. Does nothing otherwise)
         boostController.UpdateBoostState(false);
 
         while (true)
         {
             // Aim at target
             aimController.CalculateTargetRotation(target.transform.position);
-            aimController.ApplyRotation(0.1f);
+            aimController.ApplyRotation(waitPerCall);
 
             // Move/Strafe
-            ProximityStatus pStatus = moveController.ObjectProximityToSelf(target.transform, 10f, 3f);
+            ProximityStatus pStatus = moveController.ObjectProximityToSelf(target.transform, 15f, 3f);
 
             switch (pStatus)
             {
                 case ProximityStatus.Ideal:
                     // Strafing left/right (randomly)
-                    Vector2 strafeDir = (Random.Range(0, 2) == 0) ? Vector2.left : Vector2.right;
-                    moveController.UpdateMoveDirection(strafeDir.normalized);
+                    Vector2 strafeDir = moveController.GetAStrafeDirection();
+                    if (strafeDir != Vector2.zero)
+                    {
+                        moveController.UpdateMoveDirection(strafeDir);
+                    }
                     moveController.Move();
                     break;
                 
                 case ProximityStatus.TooClose:
                     // Move backwards
+                    moveController.ResetStrafeCooldown(); // So that if you switch back to "Ideal" immediately, you can strafe immediately!
+
                     moveController.UpdateMoveDirection(Vector2.down);
                     moveController.Move();
                     break;
                 
                 case ProximityStatus.TooFar:
                     // Move forwards
+                    moveController.ResetStrafeCooldown(); 
+
                     moveController.UpdateMoveDirection(Vector2.up);
                     moveController.Move();
                     break;
             }
 
             // Firing
-            ProximityStatus fireStatus = moveController.ObjectProximityToSelf(target.transform, 6f, 6f); // Essentially simulates 12 fire range
+            ProximityStatus fireStatus = moveController.ObjectProximityToSelf(target.transform, 10f, 10f); // Essentially simulates 20 fire range
             
             if (fireStatus == ProximityStatus.Ideal)
             {
                 firingController.TryBurstFire();
             }
 
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(waitPerCall);
         }
 
     }
@@ -106,8 +115,11 @@ public class BlasterAI : EnemyAINEW
 
     protected override IEnumerator Scouting()
     {
+        // In function settings...
         float waitPerCall = 0.1f;
         float randomAngle = Random.Range(0f, 2*Mathf.PI);
+
+        // Disable boost (if it was on)
         boostController.UpdateBoostState(false);
 
         while (true)
@@ -126,7 +138,7 @@ public class BlasterAI : EnemyAINEW
                 yield return StartCoroutine(aimController.CompleteRotationTowardsTarget(waitPerCall, 10f));
 
                 // Wait for 3 seconds before repeating
-                yield return new WaitForSeconds(3f);
+                yield return new WaitForSeconds(2f);
             }
 
             // === Moving forward functionality ===

@@ -33,6 +33,10 @@ public abstract class EnemyAINEW : NetworkBehaviour
     /// <returns> Coroutine... </returns>
     protected abstract IEnumerator Charging();
 
+    /// <summary>
+    /// The coroutine used for defining how the enemy scans its surroundings. 
+    /// </summary>
+    /// <returns> Coroutine... </returns>
     protected abstract IEnumerator ScanSurroundings();
 
     protected void UpdateBehaviour(EnemyState previousValue, EnemyState newValue)
@@ -71,7 +75,7 @@ public abstract class EnemyAINEW : NetworkBehaviour
         StartCoroutine(ScanSurroundings());
 
         enemyState.Value = EnemyState.Scouting;
-        StartCoroutine(Scouting());
+        currentBehaviour = StartCoroutine(Scouting());
 
         enemyState.OnValueChanged += UpdateBehaviour;
     }
