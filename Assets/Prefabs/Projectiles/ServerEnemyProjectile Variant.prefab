@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 503177574511883741, guid: b090be2106c911d42974000791472586, type: 3}
+      propertyPath: xMovementSpeed
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 503177574511883741, guid: b090be2106c911d42974000791472586, type: 3}
+      propertyPath: yMovementSpeed
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 5189233610039829250, guid: b090be2106c911d42974000791472586, type: 3}
       propertyPath: hitType
       value: 1
@@ -56,8 +64,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: ServerEnemyProjectile Variant
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8982811044839328380, guid: b090be2106c911d42974000791472586, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4938643729670751115}
   m_SourcePrefab: {fileID: 100100000, guid: b090be2106c911d42974000791472586, type: 3}
+--- !u!1 &4408635040693566656 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8982811044839328380, guid: b090be2106c911d42974000791472586, type: 3}
+  m_PrefabInstance: {fileID: 4721959592806561468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4938643729670751115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4408635040693566656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 315126139889fa640a14a51060834c23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+    damage: 15
+    owner: {fileID: 4408635040693566656}
+    self: {fileID: 4408635040693566656}

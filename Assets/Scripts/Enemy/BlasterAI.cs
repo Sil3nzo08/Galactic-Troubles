@@ -20,6 +20,8 @@ public class BlasterAI : EnemyAINEW
     [Header("Settings")]
     [SerializeField] protected float switchTargetCooldown = 3f;
     [SerializeField] protected float scanSurroundingsRate = 2f;
+    [SerializeField] protected float retreatingDuration = 3f;
+    [SerializeField] protected float retreatingCooldown = 15f;
 
 
     // ==================== Implementation ====================
@@ -98,6 +100,13 @@ public class BlasterAI : EnemyAINEW
                 firingController.TryBurstFire();
             }
 
+            // Changing states
+            if (health.currentHealth.Value <= 50 && currRetreatingCooldown <= 0)
+            {
+                // Probably should add a got shot to only retreat
+                enemyState.Value = EnemyState.Retreating;
+            }
+
             yield return new WaitForSeconds(waitPerCall);
         }
 
@@ -108,9 +117,32 @@ public class BlasterAI : EnemyAINEW
         throw new System.NotImplementedException();
     }
 
+    private float currRetreatingDuration = 0f;
+    private float currRetreatingCooldown = 0f;
     protected override IEnumerator Retreating()
     {
-        throw new System.NotImplementedException();
+        float waitPerCall = 0.1f;
+
+        boostController.UpdateBoostState(true);
+        currRetreatingDuration = retreatingDuration;
+        currRetreatingCooldown = retreatingCooldown;
+
+        while (true)
+        {
+            Vector2 awayFromTarget = selfTransform.position - target.transform.position.normalized;
+            aimController.CalculateTargetRotation(awayFromTarget);
+            aimController.ApplyRotation(waitPerCall);
+
+            moveController.UpdateMoveDirection(Vector2.up);
+            moveController.Move();
+
+            if (currRetreatingDuration < 0)
+            {
+                enemyState.Value = EnemyState.Attacking;
+            }
+
+            yield return new WaitForSeconds(waitPerCall);
+        }
     }
 
     protected override IEnumerator Scouting()
@@ -171,6 +203,16 @@ public class BlasterAI : EnemyAINEW
         if (switchTargetCooldown > 0)
         {
             switchTargetCooldown -= Time.deltaTime;
+        }
+
+        if (currRetreatingDuration > 0)
+        {
+            currRetreatingDuration -= Time.deltaTime;
+        }
+
+        if (currRetreatingCooldown > 0)
+        {
+            currRetreatingCooldown -= Time.deltaTime;
         }
     }
 }

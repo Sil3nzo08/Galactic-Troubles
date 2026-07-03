@@ -9944,6 +9944,8 @@ GameObject:
   - component: {fileID: 7331120696003010744}
   - component: {fileID: 6075893137244240923}
   - component: {fileID: 5621485468164255544}
+  - component: {fileID: -2899119184358974518}
+  - component: {fileID: -3307230537085556016}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -9983,7 +9985,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2574057251
+  GlobalObjectIdHash: 2781621498
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -10084,6 +10086,7 @@ MonoBehaviour:
   xMovementSpeed: 5
   yMovementSpeed: 5
   atMouseTolerance: 10
+  strafeCooldown: 10
 --- !u!114 &7331120696003010744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10098,6 +10101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selfTransform: {fileID: 3037048794162507396}
   maxRotationSpeed: 500
+  lookingAtTargetTolerance: 0.5
 --- !u!114 &6075893137244240923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10114,7 +10118,11 @@ MonoBehaviour:
   clientProjectilePrefab: {fileID: 9157049498108955850, guid: a922b24f58983ae46851cd036fa6f928, type: 3}
   projectileSpawnPoint: {fileID: 8682968415645722782}
   projectileSpawnRotation: {fileID: 8682968415645722782}
+  self: {fileID: 0}
   fireCooldown: 0.4
+  burstFireInfo:
+    burstAmount: 0
+    timeBetweenShots: 0
 --- !u!114 &5621485468164255544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10132,3 +10140,29 @@ MonoBehaviour:
   - {fileID: 2997128473784431212}
   mover: {fileID: 8785335423105164260}
   boostFactor: 2
+--- !u!114 &-2899119184358974518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8524322273554050642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0df65fe9bb735b45aed13967d6c663f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: -3307230537085556016}
+--- !u!114 &-3307230537085556016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8524322273554050642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cbcf252d651e6542ab278d1a3de1d4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 10000000

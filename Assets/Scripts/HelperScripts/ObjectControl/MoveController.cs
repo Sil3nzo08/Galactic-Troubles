@@ -50,10 +50,13 @@ public class MoveController : MonoBehaviour
     {
         // Calculate boosts based on the subscribers
         Vector2 boostMovement = Vector2.zero;
-        foreach (Func<Vector2> subscriber in OnDirectionChange.GetInvocationList())
-        {
-            Vector2 returnVal = subscriber.Invoke();
-            boostMovement += returnVal;
+        if (OnDirectionChange != null) { 
+            // Null check since GetInvocationList() errors when no one is subscribed to event
+            foreach (Func<Vector2> subscriber in OnDirectionChange.GetInvocationList())
+            {
+                Vector2 returnVal = subscriber.Invoke();
+                boostMovement += returnVal;
+            }
         }
 
         // Apply movement now

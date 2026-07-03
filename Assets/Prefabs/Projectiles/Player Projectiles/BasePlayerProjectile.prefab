@@ -77,9 +77,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6178687428127085344}
   - component: {fileID: 7573178675268025717}
-  - component: {fileID: 6494292064559932046}
   - component: {fileID: 6065864661362023008}
-  - component: {fileID: 919454741425498461}
+  - component: {fileID: -8415727596220346711}
   m_Layer: 8
   m_Name: BasePlayerProjectile
   m_TagString: Untagged
@@ -130,20 +129,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &6494292064559932046
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8289210070952426348}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b6716892a79a4840ab105b7de4faab0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rb: {fileID: 7573178675268025717}
-  projectileSpeed: 20
 --- !u!114 &6065864661362023008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,7 +142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifeTime: 10
---- !u!114 &919454741425498461
+--- !u!114 &-8415727596220346711
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -166,9 +151,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 8289210070952426348}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fb1cf4d89f47404395e80c2f253a9e9, type: 3}
+  m_Script: {fileID: 11500000, guid: 20ec69ed661aaaf4393b867a572cc8de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitImpact: {fileID: 7148574777619843888, guid: 79d36c6944341444bb5006ec5b8137e8, type: 3}
-  hitType: 0
-  damage: 15
+  rb: {fileID: 7573178675268025717}
+  selfTransform: {fileID: 6178687428127085344}
+  xMovementSpeed: 20
+  yMovementSpeed: 20
+  atMouseTolerance: 10
+  strafeCooldown: 10

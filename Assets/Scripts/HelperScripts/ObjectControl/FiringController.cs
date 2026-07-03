@@ -87,7 +87,14 @@ public class FiringController : NetworkBehaviour
     {
         if (IsOwner) { return; } // Don't spawn for owner, as it already happened prior to the RPC.
 
-        Instantiate(clientProjectilePrefab, projectileSpawnPoint.position, projectileSpawnRotation.rotation);
+        GameObject projectileInstance = Instantiate(clientProjectilePrefab, projectileSpawnPoint.position, projectileSpawnRotation.rotation);
+
+        // Setup movement for the projectile
+        if (projectileInstance.TryGetComponent(out MoveController mc))
+        {
+            mc.UpdateMoveDirection(Vector2.up);
+            mc.Move();
+        }
     }
 
     /// <summary>
@@ -98,9 +105,18 @@ public class FiringController : NetworkBehaviour
     {
         // Create the server projectile
         GameObject projectileInstance = Instantiate(serverProjectilePrefab, projectileSpawnPoint.position, projectileSpawnRotation.rotation);
-        if (projectileInstance.TryGetComponent(out ProjectileHits projectileHits))
+
+        // Assign ownership of the projectile being shot out to this gameObject
+        if (projectileInstance.TryGetComponent(out ServerProjectile sp))
         {
-            projectileHits.SetSourceShooter(gameObject);
+            sp.SetOwner(gameObject);
+        }
+
+        // Setup movement for projectile
+        if (projectileInstance.TryGetComponent(out MoveController mc))
+        {
+            mc.UpdateMoveDirection(Vector2.up);
+            mc.Move();
         }
 
         // Clients are commanded to spawn a dummy projectile
@@ -112,8 +128,15 @@ public class FiringController : NetworkBehaviour
     /// </summary>
     private void FireProjectile()
     {
-        // Fire projectile (this will happen on the host/owner's side, then update for all other clients via the RPC call below)
-        Instantiate(clientProjectilePrefab, projectileSpawnPoint.position, projectileSpawnRotation.rotation);
+        // Create projectile (this will happen on the host/owner's side, then update for all other clients via the RPC call below)
+        GameObject projectileInstance = Instantiate(clientProjectilePrefab, projectileSpawnPoint.position, projectileSpawnRotation.rotation);
+
+        // Setup movement for projectile
+        if (projectileInstance.TryGetComponent(out MoveController mc))
+        {
+            mc.UpdateMoveDirection(Vector2.up);
+            mc.Move();
+        }
 
         // Tell server to also fire a projectile
         SpawnProjectileServerRpc();

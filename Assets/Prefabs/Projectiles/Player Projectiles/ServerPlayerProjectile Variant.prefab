@@ -60,5 +60,29 @@ PrefabInstance:
     - {fileID: 3750726972243192210, guid: 85085a08010756e46838f14baa7ef22f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8289210070952426348, guid: 85085a08010756e46838f14baa7ef22f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6540749704800511447}
   m_SourcePrefab: {fileID: 100100000, guid: 85085a08010756e46838f14baa7ef22f, type: 3}
+--- !u!1 &2915615826650439309 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8289210070952426348, guid: 85085a08010756e46838f14baa7ef22f, type: 3}
+  m_PrefabInstance: {fileID: 6593104384995108321}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6540749704800511447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2915615826650439309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 315126139889fa640a14a51060834c23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+    damage: 20
+    owner: {fileID: 2915615826650439309}
+    self: {fileID: 2915615826650439309}
