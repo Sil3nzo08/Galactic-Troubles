@@ -40,7 +40,6 @@ public class MoveController : MonoBehaviour
     public void UpdateMoveDirection(Vector2 newNormalisedDirection)
     {   
         normalisedDirection = newNormalisedDirection;
-        Debug.Log(normalisedDirection);
     }
 
     /// <summary>

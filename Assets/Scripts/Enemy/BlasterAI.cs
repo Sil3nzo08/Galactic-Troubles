@@ -13,6 +13,7 @@ public class BlasterAI : EnemyAINEW
     [SerializeField] private AimController aimController;
     [SerializeField] private FiringController firingController;
     [SerializeField] private BoostController boostController;
+    [SerializeField] private HitController hitController;
     [SerializeField] private Health health;
     [SerializeField] private GameObject playerBase;
     [SerializeField] private Transform selfTransform;
@@ -167,19 +168,24 @@ public class BlasterAI : EnemyAINEW
                 aimController.CalculateTargetRotation(selfTransform.position + randomDirection);
 
                 // Coroutine to spend time aiming at the spot
-                yield return StartCoroutine(aimController.CompleteRotationTowardsTarget(waitPerCall, 10f));
+                yield return aimController.CompleteRotationTowardsTarget(waitPerCall, 10f);
 
                 // Wait for 3 seconds before repeating
                 yield return new WaitForSeconds(2f);
             }
 
             // === Moving forward functionality ===
-            yield return StartCoroutine(moveTowardsTarget(waitPerCall, 10f));
+            yield return MoveTowardsTarget(waitPerCall, 10f);
         }
     }
 
     // ==================== Class Specific ====================
-    private IEnumerator moveTowardsTarget(float waitPerCall, float duration)
+    private void FindPlayerBase()
+    {
+        playerBase = GameObject.FindGameObjectWithTag("Core");
+    }
+
+    private IEnumerator MoveTowardsTarget(float waitPerCall, float duration)
     {
         float currDuration = 0;
         while (currDuration < duration)
@@ -198,8 +204,15 @@ public class BlasterAI : EnemyAINEW
     }
     
 
+    // ======================= Runtime Methods =======================
+    private void Start()
+    {
+        FindPlayerBase();
+    }
+
     private void Update()
     {
+        // Cooldowns lowering as time passes
         if (switchTargetCooldown > 0)
         {
             switchTargetCooldown -= Time.deltaTime;

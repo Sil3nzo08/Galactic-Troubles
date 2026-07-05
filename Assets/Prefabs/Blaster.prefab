@@ -5013,7 +5013,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2092362789
+  GlobalObjectIdHash: 1236807532
   InScenePlacedSourceGlobalObjectIdHash: 1236807532
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -5132,8 +5132,9 @@ MonoBehaviour:
   aimController: {fileID: 3536038437168081109}
   firingController: {fileID: 6585407361975311042}
   boostController: {fileID: 6790270811741255937}
+  hitController: {fileID: 5685681358028452798}
   health: {fileID: 8611286482235404344}
-  playerBase: {fileID: 0}
+  playerBase: {fileID: 2482604936025808963, guid: 36ded2888528deb41a8ad4ab5f29c30b, type: 3}
   selfTransform: {fileID: 5665025549687137822}
   switchTargetCooldown: 3
   scanSurroundingsRate: 2
