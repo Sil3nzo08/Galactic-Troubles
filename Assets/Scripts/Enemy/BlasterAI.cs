@@ -82,11 +82,11 @@ public class BlasterAI : EnemyAI
         while (true)
         {
             // Aim at target
-            aimController.CalculateTargetRotation(target.transform.position);
+            aimController.CalculateTargetRotation(GetTarget().transform.position);
             aimController.ApplyRotation(waitPerCall);
 
             // Move/Strafe
-            ProximityStatus pStatus = moveController.ObjectProximityToSelf(target.transform, 15f, 3f);
+            ProximityStatus pStatus = moveController.ObjectProximityToSelf(GetTarget().transform, 15f, 3f);
 
             switch (pStatus)
             {
@@ -118,7 +118,7 @@ public class BlasterAI : EnemyAI
             }
 
             // Firing
-            ProximityStatus fireStatus = moveController.ObjectProximityToSelf(target.transform, 10f, 10f); // Essentially simulates 20 fire range
+            ProximityStatus fireStatus = moveController.ObjectProximityToSelf(GetTarget().transform, 10f, 10f); // Essentially simulates 20 fire range
             
             if (fireStatus == ProximityStatus.Ideal)
             {
@@ -148,7 +148,7 @@ public class BlasterAI : EnemyAI
         while (true)
         {
             // Aiming
-            aimController.CalculateTargetRotation(target.transform.position);
+            aimController.CalculateTargetRotation(GetTarget().transform.position);
             aimController.ApplyRotation(waitPerCall);
             
             // Moving
@@ -156,7 +156,7 @@ public class BlasterAI : EnemyAI
             moveController.Move();
 
             // Firing
-            ProximityStatus fireStatus = moveController.ObjectProximityToSelf(target.transform, 10f, 10f); // Essentially simulates 20 fire range
+            ProximityStatus fireStatus = moveController.ObjectProximityToSelf(GetTarget().transform, 10f, 10f); // Essentially simulates 20 fire range
             
             if (fireStatus == ProximityStatus.Ideal)
             {
@@ -188,7 +188,7 @@ public class BlasterAI : EnemyAI
 
         while (true)
         {
-            Vector2 awayFromTarget = selfTransform.position - target.transform.position.normalized;
+            Vector2 awayFromTarget = selfTransform.position - GetTarget().transform.position.normalized;
             aimController.CalculateTargetRotation(awayFromTarget);
             aimController.ApplyRotation(waitPerCall);
 
@@ -312,6 +312,16 @@ public class BlasterAI : EnemyAI
                 // Do nothing, already on its last final breath
                 break;
         }
+    }
+
+    private GameObject GetTarget()
+    {
+        if (target == null)
+        {
+            target = playerBase;
+        }
+
+        return target;
     }
     
 
