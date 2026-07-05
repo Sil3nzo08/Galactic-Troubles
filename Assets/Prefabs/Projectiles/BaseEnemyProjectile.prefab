@@ -156,7 +156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 347252277169914775}
   selfTransform: {fileID: 8347699367214769271}
-  xMovementSpeed: 5
-  yMovementSpeed: 5
+  xMovementSpeed: 15
+  yMovementSpeed: 15
   atMouseTolerance: 10
   strafeCooldown: 10

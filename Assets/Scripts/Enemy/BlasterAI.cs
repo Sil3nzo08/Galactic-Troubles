@@ -11,7 +11,8 @@ public class BlasterAI : EnemyAINEW
     [SerializeField] private SensorsController sensorsController;
     [SerializeField] private MoveController moveController;
     [SerializeField] private AimController aimController;
-    [SerializeField] private FiringController firingController;
+    [SerializeField] private FiringController normalFiringController;
+    [SerializeField] private FiringController lastDitchFiringController;
     [SerializeField] private BoostController boostController;
     [SerializeField] private HitController hitController;
     [SerializeField] private Health health;
@@ -98,7 +99,7 @@ public class BlasterAI : EnemyAINEW
             
             if (fireStatus == ProximityStatus.Ideal)
             {
-                firingController.TryBurstFire();
+                normalFiringController.TryBurstFire();
             }
 
             yield return new WaitForSeconds(waitPerCall);
@@ -108,7 +109,32 @@ public class BlasterAI : EnemyAINEW
 
     protected override IEnumerator Charging()
     {
-        throw new System.NotImplementedException();
+        // In-function settings...
+        float waitPerCall = 0.1f;
+
+        // Turn boosts on
+        boostController.UpdateBoostState(true);
+
+        while (true)
+        {
+            // Aiming
+            aimController.CalculateTargetRotation(target.transform.position);
+            aimController.ApplyRotation(waitPerCall);
+            
+            // Moving
+            moveController.UpdateMoveDirection(Vector2.up);
+            moveController.Move();
+
+            // Firing
+            ProximityStatus fireStatus = moveController.ObjectProximityToSelf(target.transform, 10f, 10f); // Essentially simulates 20 fire range
+            
+            if (fireStatus == ProximityStatus.Ideal)
+            {
+                lastDitchFiringController.TryBurstFire();
+            }
+
+            yield return new WaitForSeconds(waitPerCall);
+        }
     }
 
     private float currRetreatingDuration = 0f;
@@ -198,6 +224,15 @@ public class BlasterAI : EnemyAINEW
 
     private void OnServerHit(ServerProjectile sp)
     {
+        // If we are too low, just start charging. Don't do anything else.
+        if (health.currentHealth.Value <= 20)
+        {
+            target = sp.GetProjectileData().owner;
+            enemyState.Value = EnemyState.Charging;
+
+            return;
+        }
+        
         // We are reacting to the server's hit, changing state if need
         // be
         switch (enemyState.Value)

@@ -10,11 +10,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 503177574511883741, guid: b090be2106c911d42974000791472586, type: 3}
       propertyPath: xMovementSpeed
-      value: 12
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 503177574511883741, guid: b090be2106c911d42974000791472586, type: 3}
       propertyPath: yMovementSpeed
-      value: 12
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 5189233610039829250, guid: b090be2106c911d42974000791472586, type: 3}
       propertyPath: hitType
@@ -101,7 +101,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitEffect: {fileID: 7148574777619843888, guid: 79d36c6944341444bb5006ec5b8137e8, type: 3}
-  self: {fileID: 1253864720777905355}
 --- !u!1 &7859530717205803363 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 62326740811562964, guid: b090be2106c911d42974000791472586, type: 3}

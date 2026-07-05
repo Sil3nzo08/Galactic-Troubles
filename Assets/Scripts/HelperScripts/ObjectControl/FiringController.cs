@@ -13,6 +13,8 @@ using UnityEngine;
 /// </remarks>
 public class FiringController : NetworkBehaviour
 {
+    [SerializeField] private string purpose;
+
     [Header("References")]
     [SerializeField] private GameObject serverProjectilePrefab; // Projectile prefab instantiated locally on the server for authoritative simulation.
     [SerializeField] private GameObject clientProjectilePrefab; // Projectile prefab instantiated on clients for visual representation.
