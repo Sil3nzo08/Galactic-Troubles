@@ -29,8 +29,6 @@ public class Health : NetworkBehaviour
     /// <param name="damageAmount"> The amount of health to decrease by </param>
     public void TakeDamage(int damageAmount)
     {
-        if (!IsServer) { return; }
-
         if (currentHealth.Value > damageAmount)
         {
             currentHealth.Value -= damageAmount;
@@ -49,8 +47,6 @@ public class Health : NetworkBehaviour
     /// <param name="healAmount"> The amount of health to increase by </param>
     public void Heal(int healAmount)
     {
-        if (!IsServer) { return; }
-
         currentHealth.Value += healAmount;
 
         if (currentHealth.Value > maxHealth)
@@ -66,8 +62,6 @@ public class Health : NetworkBehaviour
     /// <param name="newValue"> The new health value </param>
     public void ModifyHealth(int newValue)
     {
-        if (!IsServer) { return; }
-
         int newValueRestricted = Mathf.Clamp(newValue, 0, maxHealth);
         currentHealth.Value = newValueRestricted;
     }

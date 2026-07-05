@@ -4,10 +4,17 @@ using Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// Abstract base class for networked enemy AI behavior, managing state transitions and behavior coroutines.
+/// </summary>
+/// <remarks>
+/// Derived classes implement state-specific behavior (Scouting, Attacking, Retreating, Charging) and surrounding detection.
+/// The server controls state changes while all clients replicate the current enemy state.
+/// </remarks>
 public abstract class EnemyAI : NetworkBehaviour
 {
-    protected NetworkVariable<EnemyState> enemyState = new NetworkVariable<EnemyState>();
-    protected Coroutine currentBehaviour; 
+    protected NetworkVariable<EnemyState> enemyState = new NetworkVariable<EnemyState>(); // The current AI behavior state, synchronized across the network. Controls which behavior coroutine is active.
+    protected Coroutine currentBehaviour;  // Reference to the currently active behavior coroutine, used to stop it when transitioning to a new state.
 
     /// <summary>
     /// The coroutine used for defining scouting behaviour. 
@@ -39,6 +46,11 @@ public abstract class EnemyAI : NetworkBehaviour
     /// <returns> Coroutine... </returns>
     protected abstract IEnumerator ScanSurroundings();
 
+    /// <summary>
+    /// Handles state transitions by stopping the current behavior coroutine and starting the new one.
+    /// </summary>
+    /// <param name="previousValue">The previous enemy state (unused, required by NetworkVariable callback signature).</param>
+    /// <param name="newValue">The new enemy state to transition into.</param>
     protected void UpdateBehaviour(EnemyState previousValue, EnemyState newValue)
     {
         // Unsubscribe from current routine behaviour, and start new one.
@@ -67,6 +79,9 @@ public abstract class EnemyAI : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Initializes the enemy AI on the server: starts surroundings scanning and sets initial state to Scouting.
+    /// </summary>
     public override void OnNetworkSpawn()
     {
         if (!IsServer) { return; }
@@ -80,6 +95,9 @@ public abstract class EnemyAI : NetworkBehaviour
         enemyState.OnValueChanged += UpdateBehaviour;
     }
 
+    /// <summary>
+    /// Cleans up the enemy AI when despawning: stops all coroutines and unsubscribes from state change events.
+    /// </summary>
     public override void OnNetworkDespawn()
     {
         if (!IsServer) { return; }
