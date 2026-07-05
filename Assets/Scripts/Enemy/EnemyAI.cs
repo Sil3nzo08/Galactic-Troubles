@@ -4,7 +4,7 @@ using Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 
-public abstract class EnemyAINEW : NetworkBehaviour
+public abstract class EnemyAI : NetworkBehaviour
 {
     protected NetworkVariable<EnemyState> enemyState = new NetworkVariable<EnemyState>();
     protected Coroutine currentBehaviour; 

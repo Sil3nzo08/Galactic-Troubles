@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Blaster : EnemyAI
+public class Blaster : OLD_EnemyAI
 {
     private bool canSwitchTarget = true;     // can we switch targets?
     private bool hasRecentlyRetreated;      // has the enemy recently retreated?

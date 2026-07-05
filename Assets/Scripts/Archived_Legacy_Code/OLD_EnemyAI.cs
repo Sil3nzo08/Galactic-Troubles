@@ -10,7 +10,7 @@ using UnityEngine;
 /// Responsible for controlling how the ship behaves in game. How it attacks the players and completes its objectives! An AI Essentially.
 /// Happens server-side.
 /// </summary>
-public abstract class EnemyAI : NetworkBehaviour
+public abstract class OLD_EnemyAI : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] protected Rigidbody2D rb;

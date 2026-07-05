@@ -35,7 +35,7 @@ public class ProjectileHits : MonoBehaviour
                 healthScript.TakeDamage(damage);
             }
 
-            if (collision.attachedRigidbody.TryGetComponent(out EnemyAI enemyAI))
+            if (collision.attachedRigidbody.TryGetComponent(out OLD_EnemyAI enemyAI))
             {
                 enemyAI.GotHit(sourceShooter);
             }

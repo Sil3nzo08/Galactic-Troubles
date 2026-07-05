@@ -14,7 +14,7 @@ using UnityEngine;
 public class DeathController : NetworkBehaviour
 {
     [Header("References")]
-    [SerializeField] private Health health;
+    [SerializeField] private Health health; // Reference to the Health component that triggers death when depleted.
 
 
     /// <summary>
@@ -37,11 +37,17 @@ public class DeathController : NetworkBehaviour
 
     // ==================== Runtime Methods ====================     
 
+    /// <summary>
+    /// Subscribes to health depletion events when the component is enabled.
+    /// </summary>
     private void OnEnable()
     {
         health.OnHealthDepleted += HandleDeath;
     }
 
+    /// <summary>
+    /// Unsubscribes from health depletion events when the component is disabled to prevent memory leaks.
+    /// </summary>
     private void OnDisable()
     {
         health.OnHealthDepleted -= HandleDeath;

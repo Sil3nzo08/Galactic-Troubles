@@ -5,29 +5,45 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class BlasterAI : EnemyAINEW
+/// <summary>
+/// AI controller for a blaster enemy that hunts targets through multi-stage combat behavior (scouting, attacking, charging, retreating).
+/// </summary>
+/// <remarks>
+/// Manages state transitions based on proximity to target, health thresholds, and incoming damage. 
+/// Uses burst firing and boost mechanics during different phases of combat.
+/// </remarks>
+public class BlasterAI : EnemyAI
 {
     [Header("References")]
-    [SerializeField] private SensorsController sensorsController;
-    [SerializeField] private MoveController moveController;
-    [SerializeField] private AimController aimController;
-    [SerializeField] private FiringController normalFiringController;
-    [SerializeField] private FiringController lastDitchFiringController;
-    [SerializeField] private BoostController boostController;
-    [SerializeField] private HitController hitController;
-    [SerializeField] private Health health;
-    [SerializeField] private GameObject playerBase;
-    [SerializeField] private Transform selfTransform;
+    [SerializeField] private SensorsController sensorsController; // Reference to the sensors controller for enemy detection.
+    [SerializeField] private MoveController moveController; // Reference to the movement controller for directional movement and proximity queries.
+    [SerializeField] private AimController aimController; // Reference to the aiming controller for target-facing rotation.
+    [SerializeField] private FiringController normalFiringController; // Reference to the standard firing controller used during normal combat (Attacking/Scouting states).
+    [SerializeField] private FiringController lastDitchFiringController; // Reference to the alternate firing controller used during Charging state (last stand before despawn).
+    [SerializeField] private BoostController boostController; // Reference to the boost controller for speed bursts during charge and retreat.
+    [SerializeField] private HitController hitController; // Reference to the hit controller for detecting incoming projectile damage.
+    [SerializeField] private Health health; // Reference to this enemy's health component for state transitions based on health thresholds.
+    [SerializeField] private GameObject playerBase; // Reference to the player base (Core) used as a scouting destination.
+    [SerializeField] private Transform selfTransform; // Reference to this object's transform for position calculations relative to targets.
 
     [Header("Settings")]
-    [SerializeField] protected float switchTargetCooldown = 3f;
-    [SerializeField] protected float scanSurroundingsRate = 2f;
-    [SerializeField] protected float retreatingDuration = 3f;
-    [SerializeField] protected float retreatingCooldown = 15f;
-
+    [SerializeField] protected float switchTargetCooldown = 3f; // Cooldown before this AI can switch to a new target (prevents erratic retargeting). I don't think this does anything yet...
+    [SerializeField] protected float scanSurroundingsRate = 2f; // Frequency at which the AI scans surroundings for new targets.
+    [SerializeField] protected float retreatingDuration = 3f; // Duration the AI remains in Retreating state before returning to Attacking.
+    [SerializeField] protected float retreatingCooldown = 15f; // Cooldown before the AI can initiate another retreat (prevents constant retreating).
+    [SerializeField] protected float healthThresholdToActivateRetreat = 50f; // Health threshold below which the AI will retreat during combat if retreat cooldown permits.
+    [SerializeField] protected float healthThresholdToActivateCharge = 20f; // Health threshold below which the AI immediately transitions to Charging state, ignoring other combat logic.
 
     // ==================== Implementation ====================
     private GameObject target;
+
+    /// <summary>
+    /// Detects nearby enemies and targets them if switching cooldown has elapsed.
+    /// </summary>
+    /// <remarks>
+    /// Transitions to Attacking state when a target is found while in Scouting state. 
+    /// Respects switchTargetCooldown to prevent rapid target switching.
+    /// </remarks>
     protected override IEnumerator ScanSurroundings()
     {
         while (true)
@@ -48,6 +64,13 @@ public class BlasterAI : EnemyAINEW
         }
     }
 
+    /// <summary>
+    /// Main combat behavior: strafes around target while aiming and firing in bursts at range.
+    /// </summary>
+    /// <remarks>
+    /// Maintains ideal distance from target through proximity checks (strafe if ideal, retreat if too close, advance if too far).
+    /// Fires normal bursts when within firing range.
+    /// </remarks>
     protected override IEnumerator Attacking()
     {
         // In function settings...
@@ -107,6 +130,13 @@ public class BlasterAI : EnemyAINEW
 
     }
 
+    /// <summary>
+    /// Aggressive end-game behavior: boosts toward target while firing continuous bursts, triggered at low health.
+    /// </summary>
+    /// <remarks>
+    /// Activated when health drops below a certain threshold. Ignores proximity management and commits to a direct charge with boost enabled.
+    /// Uses lastDitchFiringController for final barrage.
+    /// </remarks>
     protected override IEnumerator Charging()
     {
         // In-function settings...
@@ -139,6 +169,15 @@ public class BlasterAI : EnemyAINEW
 
     private float currRetreatingDuration = 0f;
     private float currRetreatingCooldown = 0f;
+
+    /// <summary>
+    /// Defensive behavior: boosts away from target for a duration before returning to attack.
+    /// </summary>
+    /// <remarks>
+    /// Activated when health drops below a certain threshold during combat and retreating cooldown is ready.
+    /// Remains in this state for retreatingDuration, then transitions back to Attacking.
+    /// Respects retreatingCooldown to prevent constant retreating.
+    /// </remarks>
     protected override IEnumerator Retreating()
     {
         float waitPerCall = 0.1f;
@@ -194,17 +233,25 @@ public class BlasterAI : EnemyAINEW
             }
 
             // === Moving forward functionality ===
-            yield return MoveTowardsTarget(waitPerCall, 10f);
+            yield return MoveTowardsBase(waitPerCall, 10f);
         }
     }
 
     // ==================== Class Specific ====================
+    /// <summary>
+    /// Finds and caches the player base (Core) at startup for navigation during scouting.
+    /// </summary>
     private void FindPlayerBase()
     {
         playerBase = GameObject.FindGameObjectWithTag("Core");
     }
 
-    private IEnumerator MoveTowardsTarget(float waitPerCall, float duration)
+    /// <summary>
+    /// Moves toward the player base position while maintaining aim rotation for a specified duration.
+    /// </summary>
+    /// <param name="waitPerCall">Frame wait time in seconds for movement updates.</param>
+    /// <param name="duration">How long to move before stopping.</param>
+    private IEnumerator MoveTowardsBase(float waitPerCall, float duration)
     {
         float currDuration = 0;
         while (currDuration < duration)
@@ -222,10 +269,14 @@ public class BlasterAI : EnemyAINEW
         moveController.StopMoving();
     }
 
+    /// <summary>
+    /// Handles incoming damage and triggers appropriate state responses (counter-attack, retreat, or charge).
+    /// </summary>
+    /// <param name="sp">The server projectile that hit this enemy.</param>
     private void OnServerHit(ServerProjectile sp)
     {
         // If we are too low, just start charging. Don't do anything else.
-        if (health.currentHealth.Value <= 20)
+        if (health.currentHealth.Value <= healthThresholdToActivateCharge)
         {
             target = sp.GetProjectileData().owner;
             enemyState.Value = EnemyState.Charging;
@@ -245,7 +296,7 @@ public class BlasterAI : EnemyAINEW
             
             case EnemyState.Attacking:
                 // Retreat if low health upon getting shot
-                if (health.currentHealth.Value <= 50 &&currRetreatingCooldown <= 0)
+                if (health.currentHealth.Value <= healthThresholdToActivateRetreat &&currRetreatingCooldown <= 0)
                 {
                     enemyState.Value = EnemyState.Retreating;
                 }
@@ -265,21 +316,33 @@ public class BlasterAI : EnemyAINEW
     
 
     // ======================= Runtime Methods =======================
+    /// <summary>
+    /// Subscribes to hit events when enabled to track incoming damage.
+    /// </summary>
     private void OnEnable()
     {
         hitController.OnServerHit += OnServerHit;
     }
 
+    /// <summary>
+    /// Unsubscribes from hit events when disabled to prevent memory leaks.
+    /// </summary>
     private void OnDisable()
     {
         hitController.OnServerHit -= OnServerHit;
     }
     
+    /// <summary>
+    /// Initializes the AI by finding and caching the player base reference.
+    /// </summary>
     private void Start()
     {
         FindPlayerBase();
     }
 
+    /// <summary>
+    /// Decrements all active cooldown timers each frame.
+    /// </summary>
     private void Update()
     {
         // Cooldowns lowering as time passes
