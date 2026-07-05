@@ -46,8 +46,11 @@ public class FiringController : NetworkBehaviour
     }
 
     /// <summary>
-    /// Attempts to fire a projectile if input is active and cooldown has elapsed.
+    /// Attempts to fire a projectile if the player is holding fire input and cooldown has elapsed.
     /// </summary>
+    /// <remarks>
+    /// Used for player-controlled firing where user input is required. Call <see cref="UpdateFireState"/> to update the firing input state.
+    /// </remarks>
     public void FireProjectileWithCooldownAndInputActive()
     {
         // Can't fire projectile yet
@@ -59,8 +62,11 @@ public class FiringController : NetworkBehaviour
     }
 
     /// <summary>
-    /// Attempts to fire a projectile only if cooldown has elapsed.
+    /// Attempts to fire a projectile if cooldown has elapsed, without requiring user input.
     /// </summary>
+    /// <remarks>
+    /// Used for automated firing (e.g., enemies, timed attacks) that do not depend on player input. Only cooldown is checked.
+    /// </remarks>
     public void FireProjectileWithCooldown()
     {
         // Can't fire projectile yet

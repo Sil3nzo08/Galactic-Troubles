@@ -10118,7 +10118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d7aa2e35e6d24642bad5f17ada983f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  purpose: 
+  purpose: General-purpose Firing
   serverProjectilePrefab: {fileID: 2915615826650439309, guid: 2a744dadfe548904ab1960562562d3a6, type: 3}
   clientProjectilePrefab: {fileID: 9157049498108955850, guid: a922b24f58983ae46851cd036fa6f928, type: 3}
   projectileSpawnPoint: {fileID: 8682968415645722782}

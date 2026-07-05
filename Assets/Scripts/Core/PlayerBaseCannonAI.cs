@@ -15,8 +15,6 @@ public class PlayerBaseCannonAI : NetworkBehaviour
     [Header("Settings")]
     [SerializeField] private float scanSurroundingsRate = 3f;
 
-
-    private Coroutine scanSurroundingsCoroutine;
     public override void OnNetworkSpawn()
     {
         if (!IsServer) { return; }
