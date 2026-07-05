@@ -9985,7 +9985,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2781621498
+  GlobalObjectIdHash: 2574057251
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -10114,15 +10114,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d7aa2e35e6d24642bad5f17ada983f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  purpose: 
   serverProjectilePrefab: {fileID: 2915615826650439309, guid: 2a744dadfe548904ab1960562562d3a6, type: 3}
   clientProjectilePrefab: {fileID: 9157049498108955850, guid: a922b24f58983ae46851cd036fa6f928, type: 3}
   projectileSpawnPoint: {fileID: 8682968415645722782}
   projectileSpawnRotation: {fileID: 8682968415645722782}
-  self: {fileID: 0}
   fireCooldown: 0.4
   burstFireInfo:
     burstAmount: 0
     timeBetweenShots: 0
+  shooterAuthority: 1
 --- !u!114 &5621485468164255544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10165,4 +10166,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cbcf252d651e6542ab278d1a3de1d4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 10000000
+  maxHealth: 200

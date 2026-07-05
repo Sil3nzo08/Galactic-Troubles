@@ -4972,9 +4972,11 @@ GameObject:
   - component: {fileID: 3536038437168081109}
   - component: {fileID: 6790270811741255937}
   - component: {fileID: 6585407361975311042}
+  - component: {fileID: 1292624708275431401}
   - component: {fileID: 289899920340945658}
   - component: {fileID: 5685681358028452798}
   - component: {fileID: 8611286482235404344}
+  - component: {fileID: 2386904027785461669}
   m_Layer: 7
   m_Name: Blaster
   m_TagString: Untagged
@@ -5013,7 +5015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1236807532
+  GlobalObjectIdHash: 492463186
   InScenePlacedSourceGlobalObjectIdHash: 1236807532
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -5130,16 +5132,17 @@ MonoBehaviour:
   sensorsController: {fileID: 289899920340945658}
   moveController: {fileID: 373243159138660163}
   aimController: {fileID: 3536038437168081109}
-  firingController: {fileID: 6585407361975311042}
+  normalFiringController: {fileID: 6585407361975311042}
+  lastDitchFiringController: {fileID: 1292624708275431401}
   boostController: {fileID: 6790270811741255937}
   hitController: {fileID: 5685681358028452798}
   health: {fileID: 8611286482235404344}
-  playerBase: {fileID: 2482604936025808963, guid: 36ded2888528deb41a8ad4ab5f29c30b, type: 3}
+  playerBase: {fileID: 0}
   selfTransform: {fileID: 5665025549687137822}
   switchTargetCooldown: 3
   scanSurroundingsRate: 2
-  retreatingDuration: 2
-  retreatingCooldown: 3
+  retreatingDuration: 3
+  retreatingCooldown: 4
 --- !u!114 &373243159138660163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5202,14 +5205,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d7aa2e35e6d24642bad5f17ada983f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverProjectilePrefab: {fileID: 1253864720777905355, guid: f5d9c3e0f29b2d844931f08d79a40a02, type: 3}
-  clientProjectilePrefab: {fileID: 4408635040693566656, guid: f26be4a52fb4f1b4e8ef406e0f8864f1, type: 3}
+  purpose: Normal/Regular Firing
+  serverProjectilePrefab: {fileID: 4408635040693566656, guid: f26be4a52fb4f1b4e8ef406e0f8864f1, type: 3}
+  clientProjectilePrefab: {fileID: 1253864720777905355, guid: f5d9c3e0f29b2d844931f08d79a40a02, type: 3}
   projectileSpawnPoint: {fileID: 1972587822542491200}
   projectileSpawnRotation: {fileID: 1972587822542491200}
   fireCooldown: 1.5
   burstFireInfo:
     burstAmount: 4
     timeBetweenShots: 0.2
+  shooterAuthority: 0
+--- !u!114 &1292624708275431401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7513761188140098593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d7aa2e35e6d24642bad5f17ada983f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  purpose: Last-ditch firing effort
+  serverProjectilePrefab: {fileID: 4408635040693566656, guid: f26be4a52fb4f1b4e8ef406e0f8864f1, type: 3}
+  clientProjectilePrefab: {fileID: 1253864720777905355, guid: f5d9c3e0f29b2d844931f08d79a40a02, type: 3}
+  projectileSpawnPoint: {fileID: 1972587822542491200}
+  projectileSpawnRotation: {fileID: 1972587822542491200}
+  fireCooldown: 1
+  burstFireInfo:
+    burstAmount: 7
+    timeBetweenShots: 0.1
+  shooterAuthority: 0
 --- !u!114 &289899920340945658
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5264,6 +5291,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+--- !u!114 &2386904027785461669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7513761188140098593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 380b263fbb311bb4ebb70a2fef088c51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 8611286482235404344}
 --- !u!1 &7523138548704784929
 GameObject:
   m_ObjectHideFlags: 0
