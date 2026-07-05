@@ -101,13 +101,6 @@ public class BlasterAI : EnemyAINEW
                 firingController.TryBurstFire();
             }
 
-            // Changing states
-            if (health.currentHealth.Value <= 50 && currRetreatingCooldown <= 0)
-            {
-                // Probably should add a got shot to only retreat
-                enemyState.Value = EnemyState.Retreating;
-            }
-
             yield return new WaitForSeconds(waitPerCall);
         }
 
@@ -202,9 +195,51 @@ public class BlasterAI : EnemyAINEW
 
         moveController.StopMoving();
     }
+
+    private void OnServerHit(ServerProjectile sp)
+    {
+        // We are reacting to the server's hit, changing state if need
+        // be
+        switch (enemyState.Value)
+        {
+            case EnemyState.Scouting:
+                // Start attacking the shooter
+                target = sp.GetProjectileData().owner;
+                enemyState.Value = EnemyState.Attacking;
+                break;
+            
+            case EnemyState.Attacking:
+                // Retreat if low health upon getting shot
+                if (health.currentHealth.Value <= 50 &&currRetreatingCooldown <= 0)
+                {
+                    enemyState.Value = EnemyState.Retreating;
+                }
+
+                break;
+
+            case EnemyState.Retreating:
+                // I guess update from who it's retreating from
+                target = sp.GetProjectileData().owner;
+                break;
+
+            case EnemyState.Charging:
+                // Do nothing, already on its last final breath
+                break;
+        }
+    }
     
 
     // ======================= Runtime Methods =======================
+    private void OnEnable()
+    {
+        hitController.OnServerHit += OnServerHit;
+    }
+
+    private void OnDisable()
+    {
+        hitController.OnServerHit -= OnServerHit;
+    }
+    
     private void Start()
     {
         FindPlayerBase();
