@@ -48,7 +48,7 @@ public class FiringController : NetworkBehaviour
     /// <summary>
     /// Attempts to fire a projectile if input is active and cooldown has elapsed.
     /// </summary>
-    public void FireProjectileWithCooldown()
+    public void FireProjectileWithCooldownAndInputActive()
     {
         // Can't fire projectile yet
         if (!isFiring || currentCooldownLeft > 0) { return; }
@@ -57,6 +57,21 @@ public class FiringController : NetworkBehaviour
         FireProjectile();
         currentCooldownLeft = fireCooldown;
     }
+
+    /// <summary>
+    /// Attempts to fire a projectile only if cooldown has elapsed.
+    /// </summary>
+    public void FireProjectileWithCooldown()
+    {
+        // Can't fire projectile yet
+        if (currentCooldownLeft > 0) { return; }
+
+        // Fire projectile and update cooldown
+        FireProjectile();
+        currentCooldownLeft = fireCooldown;
+    }
+
+    
 
     /// <summary>
     /// Attempts to fire a burst of projectiles if the cooldown has elapsed.

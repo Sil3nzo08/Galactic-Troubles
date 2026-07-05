@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -119,28 +120,27 @@ public class AimController : MonoBehaviour
     private float ClampAngle(float angle)
     {
         float normalizedAngle = NormalizeAngle(angle); // 0-360
+        float leftBound = rotationBoundaries.leftAngleBoundary;
+        float rightBound = rotationBoundaries.rightAngleBoundary;
 
-        if (rotationBoundaries.leftAngleBoundary <= rotationBoundaries.rightAngleBoundary)
+        float arcSize = (rightBound - leftBound + 360f) % 360f;
+        // [270, 90] => 90 - 270 + 360 = 180 % 360 = 180
+        // [45, 175] => 135
+        // [1, 355] => 355 - 1 = 354
+        // [355, 1] => 1 - 355 = -354 + 360 = 366 % 360 = 6
+        // FOR SOME REASON, THIS WORKS FOR BOTH NON WRAP AND WRAP-AROUNDS
+        float anglePositionInArc = (normalizedAngle - leftBound + 360f) % 360f;
+
+        // Angle is in the arc (in the range between left and right bounds)
+        if (anglePositionInArc <= arcSize)
         {
-            // e.g: [240°, 270°]
-            return Mathf.Clamp(normalizedAngle, rotationBoundaries.leftAngleBoundary, rotationBoundaries.rightAngleBoundary);
-        } 
-        else
-        {
-            // e.g: [270°, 90°]
-            
-            // Push the left boundary and the angle if its below it up by 360° (do a full loop)
-            if (normalizedAngle < rotationBoundaries.leftAngleBoundary) { normalizedAngle += 360f; } // so something like 80° -> 440°
-            float rightBoundary = rotationBoundaries.rightAngleBoundary + 360f; // [270°, 450°]
-
-            // Clamp angle to this new range
-            float clampedAngle = Mathf.Clamp(normalizedAngle, rotationBoundaries.leftAngleBoundary, rightBoundary); // 440° -> 440°
-
-            // Bring the angle back down to [0°, 360°] range
-            clampedAngle %= 360f; // 440° -> 80°
-
-            return clampedAngle; 
+            return normalizedAngle;
         }
+
+        // Angle is outside arc, so pick closest bound (self-made clamping behaviour)
+        float distanceFromLeftBound = Mathf.Abs(normalizedAngle - leftBound);
+        float distanceFromRightBound = Mathf.Abs(normalizedAngle - rightBound);
+        return (distanceFromLeftBound < distanceFromRightBound) ? leftBound : rightBound;
     }
 }
 
