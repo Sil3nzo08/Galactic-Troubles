@@ -10103,6 +10103,9 @@ MonoBehaviour:
   selfTransform: {fileID: 3037048794162507396}
   maxRotationSpeed: 500
   lookingAtTargetTolerance: 0.5
+  rotationBoundaries:
+    leftAngleBoundary: 340
+    rightAngleBoundary: 180
 --- !u!114 &6075893137244240923
 MonoBehaviour:
   m_ObjectHideFlags: 0
