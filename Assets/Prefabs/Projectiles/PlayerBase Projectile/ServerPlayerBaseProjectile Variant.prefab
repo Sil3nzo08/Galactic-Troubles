@@ -14,11 +14,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 503177574511883741, guid: b090be2106c911d42974000791472586, type: 3}
       propertyPath: xMovementSpeed
-      value: 15
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 503177574511883741, guid: b090be2106c911d42974000791472586, type: 3}
       propertyPath: yMovementSpeed
-      value: 15
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 5189233610039829250, guid: b090be2106c911d42974000791472586, type: 3}
       propertyPath: hitType
