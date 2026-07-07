@@ -6,16 +6,27 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Responsible for showing the current wave number and animating the wave transition popup (syncs across all clients).
+/// </summary>
 public class WaveUIController : NetworkBehaviour
 {
     [Header("References")]
-    [SerializeField] private TMP_Text currentWaveText;
-    [SerializeField] private TMP_Text popUpWaveText;
+    [SerializeField] private TMP_Text currentWaveText; // Reference to the text element that displays the current wave number.
+    [SerializeField] private TMP_Text popUpWaveText; // Reference to the popup text element used for the wave transition announcement.
 
     [Header("Settings")]
-    [SerializeField] private PopUpTextConfigurations popUpConfigs;
+    [SerializeField] private PopUpTextConfigurations popUpConfigs; // Configuration values for the popup fade-in, display, and fade-out timing.
     
-
+    /// <summary>
+    /// Starts the wave transition sequence and broadcasts it to all clients.
+    /// </summary>
+    /// <param name="nextWaveNum">
+    /// The wave number to display in the UI.
+    /// </param>
+    /// <returns>
+    /// An IEnumerator used by Unity's coroutine system.
+    /// </returns>
     public IEnumerator TransitionToNextWave(int nextWaveNum)
     {
         // All clients see the pop up
@@ -27,6 +38,12 @@ public class WaveUIController : NetworkBehaviour
 
 
     // ===================== HIDDEN FUNCTIONALITY =====================
+    /// <summary>
+    /// Updates the wave text on all clients and starts the popup animation.
+    /// </summary>
+    /// <param name="waveNum">
+    /// The wave number to display.
+    /// </param>
     [ClientRpc] 
     private void TransitionToNextWaveClientRpc(int waveNum)
     {
@@ -34,6 +51,12 @@ public class WaveUIController : NetworkBehaviour
         StartCoroutine(DisplayPopUpWaveText());
     }
 
+    /// <summary>
+    /// Animates the wave popup text through fade-in, display, and fade-out phases.
+    /// </summary>
+    /// <returns>
+    /// An IEnumerator used by Unity's coroutine system.
+    /// </returns>
     private IEnumerator DisplayPopUpWaveText()
     {
         float waitPerCall = 0.01f;
@@ -56,6 +79,12 @@ public class WaveUIController : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the current wave text and the popup wave text with the provided wave number.
+    /// </summary>
+    /// <param name="currWave">
+    /// The wave number to display.
+    /// </param>
     private void UpdateWaveText(int currWave)
     {
         currentWaveText.text = $"Wave {currWave}";
@@ -63,10 +92,13 @@ public class WaveUIController : NetworkBehaviour
     }
 }
 
+/// <summary>
+/// Stores timing values for the wave transition popup animation.
+/// </summary>
 [System.Serializable] 
 public struct PopUpTextConfigurations
 {
-    public float fadeInDuration;
-    public float displayDuration;
-    public float fadeOutDuration; 
+    public float fadeInDuration; // The duration of the popup fade-in animation.
+    public float displayDuration; // The duration that the popup remains fully visible.
+    public float fadeOutDuration; // The duration of the popup fade-out animation.
 }
