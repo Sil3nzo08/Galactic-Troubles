@@ -5015,7 +5015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 492463186
+  GlobalObjectIdHash: 1236807532
   InScenePlacedSourceGlobalObjectIdHash: 1236807532
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -5178,6 +5178,9 @@ MonoBehaviour:
   selfTransform: {fileID: 5665025549687137822}
   maxRotationSpeed: 80
   lookingAtTargetTolerance: 0.5
+  rotationBoundaries:
+    leftAngleBoundary: 0
+    rightAngleBoundary: 0
 --- !u!114 &6790270811741255937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5267,6 +5270,7 @@ MonoBehaviour:
     directionTransform: {fileID: 5665025549687137822}
     rotationOffset: -30
     sightDistance: 12
+  debugRays: 0
 --- !u!114 &5685681358028452798
 MonoBehaviour:
   m_ObjectHideFlags: 0

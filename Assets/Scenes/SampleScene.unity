@@ -332,8 +332,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 405938660}
-  - component: {fileID: 405938659}
   - component: {fileID: 405938658}
+  - component: {fileID: 405938659}
   m_Layer: 0
   m_Name: WaveManager
   m_TagString: Untagged
@@ -374,7 +374,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd0eb79adddbe7545bb29ba9c807c4db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waves: []
+  waves:
+  - {fileID: 11400000, guid: ce469e6d5c8d90d47b3842b9e439073f, type: 2}
 --- !u!4 &405938660
 Transform:
   m_ObjectHideFlags: 0
@@ -574,6 +575,37 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 450.36276, y: 384.69525, z: 3.1819882}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &683824786
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 683824787}
+  m_Layer: 0
+  m_Name: =========== MANAGERS ===========
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &683824787
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683824786}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.3780989, y: -0.27939942, z: -0.026707336}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1218,6 +1250,7 @@ SceneRoots:
   - {fileID: 1496267212}
   - {fileID: 1178784004}
   - {fileID: 276640965}
-  - {fileID: 660171490}
   - {fileID: 8835926267107533631}
+  - {fileID: 683824787}
+  - {fileID: 660171490}
   - {fileID: 405938660}
