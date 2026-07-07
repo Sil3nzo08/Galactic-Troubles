@@ -18,7 +18,7 @@ public class SensorsController : MonoBehaviour
     [SerializeField] private RayCastInfo[] rayInfos; // Array of raycast configurations defining directions and distances to scan. Essentially defines all the rays to cast.
     
     [Header("Admin")]
-    [SerializeField] private bool debugRays = false;
+    [SerializeField] private bool debugRays = false; // Enables debug drawing of the raycasts while the scene is running.
     
     
     /// <summary>
@@ -56,16 +56,9 @@ public class SensorsController : MonoBehaviour
     }
 
 
-
-    // ======================== Runtime Methods ========================
-    private void Start()
-    {
-        if (debugRays)
-        {
-            StartCoroutine(DrawRays());
-        }
-    }
-
+    /// <summary>
+    /// Repeatedly draws each configured ray in the scene for debugging purposes. (Once every second)
+    /// </summary>
     private IEnumerator DrawRays()
     {
         while (true)
@@ -76,6 +69,18 @@ public class SensorsController : MonoBehaviour
             }
 
             yield return new WaitForSeconds(1f);
+        }
+    }
+
+    // ======================== Runtime Methods ========================
+    /// <summary>
+    /// Starts the ray debug visualization routine when debug drawing is enabled.
+    /// </summary>
+    private void Start()
+    {
+        if (debugRays)
+        {
+            StartCoroutine(DrawRays());
         }
     }
 }

@@ -314,6 +314,12 @@ public class BlasterAI : EnemyAI
         }
     }
 
+    /// <summary>
+    /// Returns the current target, or falls back to the player base when no target is set.
+    /// </summary>
+    /// <returns>
+    /// The active target GameObject, or the player base if no enemy target has been assigned.
+    /// </returns>
     private GameObject GetTarget()
     {
         if (target == null)

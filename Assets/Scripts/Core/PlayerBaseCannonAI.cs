@@ -4,33 +4,34 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 
+/// <summary>
+/// Controls the base cannon AI behavior for a networked player unit.
+/// </summary>
+/// <remarks>
+/// This component scans for nearby enemies, aims at the current target, and fires
+/// projectiles when a valid target is available.
+/// </remarks>
 public class PlayerBaseCannonAI : NetworkBehaviour
 {
     [Header("References")] 
-    [SerializeField] private SensorsController sensorsController;
-    [SerializeField] private AimController aimController;
-    [SerializeField] private FiringController firingController;
+    [SerializeField] private SensorsController sensorsController; // Reference to the sensor controller used to detect nearby targets.
+    [SerializeField] private AimController aimController; // Reference to the aiming controller used to rotate the cannon toward a target.
+    [SerializeField] private FiringController firingController; // Reference to the firing controller used to launch projectiles.
 
 
     [Header("Settings")]
-    [SerializeField] private float scanSurroundingsRate = 3f;
+    [SerializeField] private float scanSurroundingsRate = 3f; // The interval, in seconds, between target scans.
 
-    public override void OnNetworkSpawn()
-    {
-        if (!IsServer) { return; }
 
-        StartCoroutine(ScanSurroundings());
-        StartCoroutine(FireAtTarget());
-    }
+    // ==================== Private Methods ====================
+    private GameObject target; // The currently selected enemy target, if one is detected.
 
-    public override void OnNetworkDespawn()
-    {
-        if (!IsServer) { return; }
-
-        StopAllCoroutines();
-    }
-
-    private GameObject target;
+    /// <summary>
+    /// Continuously scans the surroundings for a valid enemy target.
+    /// </summary>
+    /// <returns>
+    /// An IEnumerator used by Unity's coroutine system.
+    /// </returns>
     private IEnumerator ScanSurroundings()
     {
         while (true)
@@ -53,6 +54,12 @@ public class PlayerBaseCannonAI : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Continuously aims at the current target and fires when a valid target exists.
+    /// </summary>
+    /// <returns>
+    /// An IEnumerator used by Unity's coroutine system.
+    /// </returns>
     private IEnumerator FireAtTarget()
     {
         float waitPerCall = 0.1f;
@@ -74,5 +81,31 @@ public class PlayerBaseCannonAI : NetworkBehaviour
     }
 
 
+    // ==================== Runtime Methods ====================
+    /// <summary>
+    /// Called when the object is spawned on the network.
+    /// </summary>
+    /// <remarks>
+    /// Starts the target-scanning and firing routines on the server.
+    /// </remarks>
+    public override void OnNetworkSpawn()
+    {
+        if (!IsServer) { return; }
 
+        StartCoroutine(ScanSurroundings());
+        StartCoroutine(FireAtTarget());
+    }
+
+    /// <summary>
+    /// Called when the object is despawned from the network.
+    /// </summary>
+    /// <remarks>
+    /// Stops all running coroutines to prevent further AI behavior after despawn.
+    /// </remarks>
+    public override void OnNetworkDespawn()
+    {
+        if (!IsServer) { return; }
+
+        StopAllCoroutines();
+    }
 }
