@@ -8,7 +8,9 @@ using UnityEngine;
 public class WaveManager : NetworkBehaviour
 {
     [Header("References")]
+    [SerializeField] private WaveUIController waveUIController;
     [SerializeField] private List<WaveData> waves; // Each wave's data is contained in a single element in this list
+    
 
     public event Action<WaveManager> OnNextWave; // Invoked when next wave starts
 
@@ -56,6 +58,18 @@ public class WaveManager : NetworkBehaviour
         }
     }
 
+    private IEnumerator TransitionToNextWave()
+    {
+        if (currWave != waves.Count) { currWave++; } // Increment while we're not on the last wave defined, to avoid errors
+
+        // Show text
+        waveUIController.UpdateWaveText(currWave);
+        yield return waveUIController.DisplayPopUpWaveText();
+
+        // Once text is finished showing, spawn wave
+        StartCoroutine(SpawnWave(waves[currWave - 1]));
+    }
+    
     private void UpdateCountUponEnemyDeath(DeathController deathController)
     {   
         // Reduce enemy count by 1
@@ -68,9 +82,7 @@ public class WaveManager : NetworkBehaviour
         if (currEnemyCount <= 0)
         {
             OnNextWave?.Invoke(this);
-            
-            if (currWave != waves.Count - 1) { currWave++; } // Increment while we're not on the last wave defined, to avoid errors
-            StartCoroutine(SpawnWave(waves[currWave]));
+            StartCoroutine(TransitionToNextWave());
         }
     }
 
@@ -79,6 +91,6 @@ public class WaveManager : NetworkBehaviour
     {
         if (!IsServer) { return; }
 
-        StartCoroutine(SpawnWave(waves[currWave]));
+        StartCoroutine(TransitionToNextWave());
     }
 }
