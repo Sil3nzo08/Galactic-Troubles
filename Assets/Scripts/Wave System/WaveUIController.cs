@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WaveUIController : MonoBehaviour
+public class WaveUIController : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private TMP_Text currentWaveText;
@@ -15,13 +16,25 @@ public class WaveUIController : MonoBehaviour
     [SerializeField] private PopUpTextConfigurations popUpConfigs;
     
 
-    public void UpdateWaveText(int currWave)
+    public IEnumerator TransitionToNextWave(int nextWaveNum)
     {
-        currentWaveText.text = $"Wave {currWave}";
-        popUpWaveText.text = $"Wave {currWave}";
+        // All clients see the pop up
+        TransitionToNextWaveClientRpc(nextWaveNum);
+
+        // Stop coroutine when our display has ended
+        yield return new WaitForSeconds(popUpConfigs.fadeInDuration + popUpConfigs.displayDuration + popUpConfigs.fadeOutDuration);
     }
 
-    public IEnumerator DisplayPopUpWaveText()
+
+    // ===================== HIDDEN FUNCTIONALITY =====================
+    [ClientRpc] 
+    private void TransitionToNextWaveClientRpc(int waveNum)
+    {
+        UpdateWaveText(waveNum);
+        StartCoroutine(DisplayPopUpWaveText());
+    }
+
+    private IEnumerator DisplayPopUpWaveText()
     {
         float waitPerCall = 0.01f;
 
@@ -41,6 +54,12 @@ public class WaveUIController : MonoBehaviour
             popUpWaveText.alpha -= 1 / popUpConfigs.fadeOutDuration * waitPerCall;
             yield return new WaitForSeconds(waitPerCall);
         }
+    }
+
+    private void UpdateWaveText(int currWave)
+    {
+        currentWaveText.text = $"Wave {currWave}";
+        popUpWaveText.text = $"Wave {currWave}";
     }
 }
 

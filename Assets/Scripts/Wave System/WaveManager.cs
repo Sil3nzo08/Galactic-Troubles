@@ -63,8 +63,7 @@ public class WaveManager : NetworkBehaviour
         if (currWave != waves.Count) { currWave++; } // Increment while we're not on the last wave defined, to avoid errors
 
         // Show text
-        waveUIController.UpdateWaveText(currWave);
-        yield return waveUIController.DisplayPopUpWaveText();
+        yield return waveUIController.TransitionToNextWave(currWave);
 
         // Once text is finished showing, spawn wave
         StartCoroutine(SpawnWave(waves[currWave - 1]));
