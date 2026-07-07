@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1649787361362666864}
   m_Layer: 0
-  m_Name: StartingTransform
+  m_Name: TopStartingTransform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24,12 +24,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 704007386322470821}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.05700016, y: 2.348, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 49927261499737233}
+  m_Father: {fileID: 4020338745667838996}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2482604936025808963
 GameObject:
@@ -71,6 +71,10 @@ Transform:
   - {fileID: 7165901334695806562}
   - {fileID: 2030557968974802155}
   - {fileID: 1145735023204772522}
+  - {fileID: 4747703051186167692}
+  - {fileID: 1649787361362666864}
+  - {fileID: 4159372320356892752}
+  - {fileID: 4311430871164665671}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &489784646043652001
@@ -219,12 +223,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2942819553292073956}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: -0.7071068}
+  m_LocalPosition: {x: 2.3899994, y: -0.089999914, z: 0.07365373}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1145735023204772522}
+  m_Father: {fileID: 4020338745667838996}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5057353329230413386
 GameObject:
@@ -458,12 +462,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9193624066672346468}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: -2.4300003, y: 0.00999999, z: 0.07365373}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7165901334695806562}
+  m_Father: {fileID: 4020338745667838996}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9209076775105293779
 GameObject:
@@ -489,12 +493,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9209076775105293779}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 1, w: 0}
+  m_LocalPosition: {x: -0.010000229, y: -2.58, z: 0.07365373}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2030557968974802155}
+  m_Father: {fileID: 4020338745667838996}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &551135566999686787
 PrefabInstance:
@@ -551,9 +555,6 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 510989733822024210, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1649787361362666864}
     - targetCorrespondingSourceObject: {fileID: 510989733822024210, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9159160753748161774}
@@ -613,7 +614,7 @@ MonoBehaviour:
   UseQuaternionCompression: 0
   UseHalfFloatPrecision: 0
   InLocalSpace: 0
-  Interpolate: 1
+  Interpolate: 0
   SlerpPosition: 0
 --- !u!114 &3904619729643069723
 MonoBehaviour:
@@ -630,7 +631,7 @@ MonoBehaviour:
   sensorsController: {fileID: 4360036017851569196}
   aimController: {fileID: 7616830784175127512}
   firingController: {fileID: 1878140097153466167}
-  scanSurroundingsRate: 2
+  scanSurroundingsRate: 0.5
 --- !u!114 &4360036017851569196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -650,15 +651,32 @@ MonoBehaviour:
   - positionTransform: {fileID: 1649787361362666864}
     directionTransform: {fileID: 1649787361362666864}
     rotationOffset: 0
-    sightDistance: 30
+    sightDistance: 20
   - positionTransform: {fileID: 1649787361362666864}
     directionTransform: {fileID: 1649787361362666864}
-    rotationOffset: 30
-    sightDistance: 30
-  - positionTransform: {fileID: 4159372320356892752}
-    directionTransform: {fileID: 4159372320356892752}
-    rotationOffset: -30
-    sightDistance: 30
+    rotationOffset: 20
+    sightDistance: 20
+  - positionTransform: {fileID: 1649787361362666864}
+    directionTransform: {fileID: 1649787361362666864}
+    rotationOffset: -20
+    sightDistance: 20
+  - positionTransform: {fileID: 1649787361362666864}
+    directionTransform: {fileID: 1649787361362666864}
+    rotationOffset: 50
+    sightDistance: 20
+  - positionTransform: {fileID: 1649787361362666864}
+    directionTransform: {fileID: 1649787361362666864}
+    rotationOffset: -50
+    sightDistance: 20
+  - positionTransform: {fileID: 1649787361362666864}
+    directionTransform: {fileID: 1649787361362666864}
+    rotationOffset: 80
+    sightDistance: 20
+  - positionTransform: {fileID: 1649787361362666864}
+    directionTransform: {fileID: 1649787361362666864}
+    rotationOffset: -80
+    sightDistance: 20
+  debugRays: 0
 --- !u!114 &7616830784175127512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -756,11 +774,11 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 510989733822024210, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4747703051186167692}
-    - targetCorrespondingSourceObject: {fileID: 510989733822024210, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 3376894813801416857}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7366325427286246890, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8782262076785399807}
     - targetCorrespondingSourceObject: {fileID: 7366325427286246890, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4507948158713489783}
@@ -784,6 +802,37 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7366325427286246890, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
   m_PrefabInstance: {fileID: 644315576030552248}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8782262076785399807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7983580767758214482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
+  SyncPositionX: 0
+  SyncPositionY: 0
+  SyncPositionZ: 0
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  Interpolate: 0
+  SlerpPosition: 0
 --- !u!114 &4507948158713489783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -819,15 +868,32 @@ MonoBehaviour:
   - positionTransform: {fileID: 4747703051186167692}
     directionTransform: {fileID: 4747703051186167692}
     rotationOffset: 0
-    sightDistance: 30
+    sightDistance: 20
   - positionTransform: {fileID: 4747703051186167692}
     directionTransform: {fileID: 4747703051186167692}
-    rotationOffset: 30
-    sightDistance: 30
+    rotationOffset: 20
+    sightDistance: 20
   - positionTransform: {fileID: 4747703051186167692}
     directionTransform: {fileID: 4747703051186167692}
-    rotationOffset: -30
-    sightDistance: 30
+    rotationOffset: -20
+    sightDistance: 20
+  - positionTransform: {fileID: 4747703051186167692}
+    directionTransform: {fileID: 4747703051186167692}
+    rotationOffset: 50
+    sightDistance: 20
+  - positionTransform: {fileID: 4747703051186167692}
+    directionTransform: {fileID: 4747703051186167692}
+    rotationOffset: -50
+    sightDistance: 20
+  - positionTransform: {fileID: 4747703051186167692}
+    directionTransform: {fileID: 4747703051186167692}
+    rotationOffset: -80
+    sightDistance: 20
+  - positionTransform: {fileID: 4747703051186167692}
+    directionTransform: {fileID: 4747703051186167692}
+    rotationOffset: 80
+    sightDistance: 20
+  debugRays: 0
 --- !u!114 &7222554339991405254
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -925,11 +991,11 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 510989733822024210, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4311430871164665671}
-    - targetCorrespondingSourceObject: {fileID: 510989733822024210, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 5799568578236034987}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7366325427286246890, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 680823737187690729}
     - targetCorrespondingSourceObject: {fileID: 7366325427286246890, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3039862661777252701}
@@ -953,6 +1019,37 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7366325427286246890, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
   m_PrefabInstance: {fileID: 1962051846352774905}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &680823737187690729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9007456750337696531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
+  SyncPositionX: 0
+  SyncPositionY: 0
+  SyncPositionZ: 0
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  Interpolate: 0
+  SlerpPosition: 0
 --- !u!114 &3039862661777252701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -988,15 +1085,32 @@ MonoBehaviour:
   - positionTransform: {fileID: 4311430871164665671}
     directionTransform: {fileID: 4311430871164665671}
     rotationOffset: 0
-    sightDistance: 30
+    sightDistance: 20
   - positionTransform: {fileID: 4311430871164665671}
     directionTransform: {fileID: 4311430871164665671}
-    rotationOffset: 30
-    sightDistance: 30
+    rotationOffset: 20
+    sightDistance: 20
   - positionTransform: {fileID: 4311430871164665671}
     directionTransform: {fileID: 4311430871164665671}
-    rotationOffset: -30
-    sightDistance: 30
+    rotationOffset: -20
+    sightDistance: 20
+  - positionTransform: {fileID: 4311430871164665671}
+    directionTransform: {fileID: 4311430871164665671}
+    rotationOffset: 50
+    sightDistance: 20
+  - positionTransform: {fileID: 4311430871164665671}
+    directionTransform: {fileID: 4311430871164665671}
+    rotationOffset: -50
+    sightDistance: 20
+  - positionTransform: {fileID: 4311430871164665671}
+    directionTransform: {fileID: 4311430871164665671}
+    rotationOffset: -80
+    sightDistance: 20
+  - positionTransform: {fileID: 4311430871164665671}
+    directionTransform: {fileID: 4311430871164665671}
+    rotationOffset: 80
+    sightDistance: 20
+  debugRays: 0
 --- !u!114 &8723758632419798071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1094,11 +1208,11 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 510989733822024210, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4159372320356892752}
-    - targetCorrespondingSourceObject: {fileID: 510989733822024210, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 2691633524915333909}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7366325427286246890, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6902597045702120292}
     - targetCorrespondingSourceObject: {fileID: 7366325427286246890, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3581963348768663719}
@@ -1117,6 +1231,37 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7366325427286246890, guid: 9d9b73f3862e685458c3e27c7a71b2cd, type: 3}
   m_PrefabInstance: {fileID: 7234191918687571056}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6902597045702120292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170981523427477914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
+  SyncPositionX: 0
+  SyncPositionY: 0
+  SyncPositionZ: 0
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  Interpolate: 0
+  SlerpPosition: 0
 --- !u!114 &3581963348768663719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1152,15 +1297,36 @@ MonoBehaviour:
   - positionTransform: {fileID: 4159372320356892752}
     directionTransform: {fileID: 4159372320356892752}
     rotationOffset: 0
-    sightDistance: 30
+    sightDistance: 20
   - positionTransform: {fileID: 4159372320356892752}
     directionTransform: {fileID: 4159372320356892752}
-    rotationOffset: 30
-    sightDistance: 30
+    rotationOffset: 20
+    sightDistance: 20
+  - positionTransform: {fileID: 4159372320356892752}
+    directionTransform: {fileID: 4159372320356892752}
+    rotationOffset: -20
+    sightDistance: 20
   - positionTransform: {fileID: 4159372320356892752}
     directionTransform: {fileID: 4159372320356892752}
     rotationOffset: -30
     sightDistance: 30
+  - positionTransform: {fileID: 4159372320356892752}
+    directionTransform: {fileID: 4159372320356892752}
+    rotationOffset: 50
+    sightDistance: 20
+  - positionTransform: {fileID: 4159372320356892752}
+    directionTransform: {fileID: 4159372320356892752}
+    rotationOffset: -50
+    sightDistance: 20
+  - positionTransform: {fileID: 4159372320356892752}
+    directionTransform: {fileID: 4159372320356892752}
+    rotationOffset: 80
+    sightDistance: 20
+  - positionTransform: {fileID: 4159372320356892752}
+    directionTransform: {fileID: 4159372320356892752}
+    rotationOffset: -80
+    sightDistance: 20
+  debugRays: 0
 --- !u!114 &8645516923015889821
 MonoBehaviour:
   m_ObjectHideFlags: 0

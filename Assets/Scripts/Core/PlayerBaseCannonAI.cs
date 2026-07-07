@@ -38,7 +38,16 @@ public class PlayerBaseCannonAI : NetworkBehaviour
             // Sensing
             List<GameObject> enemy = sensorsController.GenerateRaycasts(1);
 
-            if (enemy.Count > 0) { target = enemy[0]; }
+            if (enemy.Count > 0) 
+            { 
+                // Found a target
+                target = enemy[0]; 
+            } 
+            else 
+            {
+                // Did not find a target
+                target = null; 
+            }
 
             yield return new WaitForSeconds(scanSurroundingsRate);
         }

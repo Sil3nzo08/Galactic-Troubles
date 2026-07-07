@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -16,11 +17,15 @@ public class SensorsController : MonoBehaviour
     [SerializeField] private LayerMask targetLayers; // Layers to detect when raycasting (the layers the raycasts use to detect gameObjects on).
     [SerializeField] private RayCastInfo[] rayInfos; // Array of raycast configurations defining directions and distances to scan. Essentially defines all the rays to cast.
     
+    [Header("Admin")]
+    [SerializeField] private bool debugRays = false;
+    
+    
     /// <summary>
     /// Performs raycasts in all configured directions and returns discovered objects.
     /// </summary>
     /// <param name="maxObjectsToDiscover">Maximum number of objects to return. Defaults to 50.</param>
-    /// <returns>A list of discovered GameObjects, up to the specified maximum.</returns>
+    /// <returns>A list of discovered GameObjects, up to the specified maximum. Returns an empty list if no GameObjects were discovered. </returns>
     public List<GameObject> GenerateRaycasts(int maxObjectsToDiscover = 50)
     {
         List<GameObject> discoveredObjects = new List<GameObject>();
@@ -48,6 +53,30 @@ public class SensorsController : MonoBehaviour
         }
 
         return discoveredObjects;
+    }
+
+
+
+    // ======================== Runtime Methods ========================
+    private void Start()
+    {
+        if (debugRays)
+        {
+            StartCoroutine(DrawRays());
+        }
+    }
+
+    private IEnumerator DrawRays()
+    {
+        while (true)
+        {
+            foreach (RayCastInfo rayInfo in rayInfos)
+            {
+                Debug.DrawRay(rayInfo.positionTransform.position, Quaternion.Euler(0, 0, rayInfo.rotationOffset) * rayInfo.directionTransform.up * rayInfo.sightDistance, Color.red, 1f); 
+            }
+
+            yield return new WaitForSeconds(1f);
+        }
     }
 }
 

@@ -86,7 +86,7 @@ public class BlasterAI : EnemyAI
             aimController.ApplyRotation(waitPerCall);
 
             // Move/Strafe
-            ProximityStatus pStatus = moveController.ObjectProximityToSelf(GetTarget().transform, 15f, 3f);
+            ProximityStatus pStatus = moveController.ObjectProximityToSelf(GetTarget().transform,13f, 3f);
 
             switch (pStatus)
             {
@@ -118,7 +118,7 @@ public class BlasterAI : EnemyAI
             }
 
             // Firing
-            ProximityStatus fireStatus = moveController.ObjectProximityToSelf(GetTarget().transform, 10f, 10f); // Essentially simulates 20 fire range
+            ProximityStatus fireStatus = moveController.ObjectProximityToSelf(GetTarget().transform, 8f, 8f); // Essentially simulates 16 fire range
             
             if (fireStatus == ProximityStatus.Ideal)
             {
