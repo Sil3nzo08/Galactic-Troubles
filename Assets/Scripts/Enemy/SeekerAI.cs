@@ -20,6 +20,7 @@ public class SeekerAI : EnemyAI
     [SerializeField] private float scanSurroundingsRate = 1f;
     [SerializeField] private Vector2 directionSwitchCooldownRange = new Vector2(1f, 1.5f); // X-coord is lower bound, Y-coord is upper bound
     [SerializeField] private float healthThresholdToChargeAtPlayer = 40f;
+    [SerializeField] private float retreatDuration = 2f;
 
 
     // ======================== Implementation ========================
@@ -47,6 +48,9 @@ public class SeekerAI : EnemyAI
     {
         float waitPerCall = 0.1f;
         float currOffset = 0f;
+
+        spriteController.SwitchSprite("Scouting");
+        boostController.UpdateBoostState(false);
 
         while (true)
         {
@@ -106,21 +110,35 @@ public class SeekerAI : EnemyAI
         }
     }
 
+    private float currRetreatDuration = 0f;
     protected override IEnumerator Retreating()
     {
         // Here, "target" refers to the player ship we want to run away from
         float waitPerCall = 0.1f;
 
+        spriteController.SwitchSprite("Scouting");
+        boostController.UpdateBoostState(true);
+
+        // Set retreating duration
+        currRetreatDuration = retreatDuration;
+
         while (true)
         {
+            // Check if retreating duration is done
+            if (currRetreatDuration <= 0)
+            {
+                enemyState.Value = EnemyState.Scouting;
+            }
+
             // Calculate necessary vectors
             Vector2 towardsBase = (playerBase.transform.position - transform.position).normalized;
             Vector2 perpendicularToBase = new Vector2(-towardsBase.y, towardsBase.x).normalized;
             Vector2 toPlayer = (GetTarget().transform.position - transform.position).normalized;
 
             // Pick the better perpendicular direction (one that allows this ship to move away from the player/target)
-            if (Vector2.Dot(perpendicularToBase, toPlayer) > 0)
+            if (Vector2.Dot(perpendicularToBase, toPlayer) > 0) 
             {
+                // The lower the dot product, the better. -1 means its the furthest direction possible, 1 means its literally in the direction of the player, so closer to one means switch to other perpendicular!
                 perpendicularToBase = -perpendicularToBase;
             }
 
@@ -179,8 +197,8 @@ public class SeekerAI : EnemyAI
             target = sp.GetProjectileData().owner;
             enemyState.Value = EnemyState.Charging;
         }
-        // else try and move away from the player whilst repositioning for a better angle at the core 
-        else
+        // else try and move away from the player whilst repositioning for a better angle at the core (only if it was in scouting phase)
+        else if (enemyState.Value == EnemyState.Scouting)
         {
             target = sp.GetProjectileData().owner;
             enemyState.Value = EnemyState.Retreating;
@@ -214,6 +232,11 @@ public class SeekerAI : EnemyAI
         if (currDirectionSwitchCooldown > 0)
         {
             currDirectionSwitchCooldown -= Time.deltaTime;
+        }
+
+        if (currRetreatDuration > 0)
+        {
+            currRetreatDuration -= Time.deltaTime;
         }
     }
 }
