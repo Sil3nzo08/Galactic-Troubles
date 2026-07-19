@@ -10,13 +10,20 @@ public class SeekerAI : EnemyAI
     [SerializeField] private AimController aimController;
     [SerializeField] private SensorsController sensorsController;
     [SerializeField] private SpriteController spriteController;
+    [SerializeField] private HitController hitController;
+    [SerializeField] private BoostController boostController;
+    [SerializeField] private Health health;
     [SerializeField] private GameObject playerBase;
 
 
     [Header("Settings")]
-    [SerializeField] private float scanSurroundingsRate = 2f;
-    [SerializeField] private float switchScoutingDirectionCooldown = 1f;
-    
+    [SerializeField] private float scanSurroundingsRate = 1f;
+    [SerializeField] private Vector2 directionSwitchCooldownRange = new Vector2(1f, 1.5f); // X-coord is lower bound, Y-coord is upper bound
+    [SerializeField] private float healthThresholdToChargeAtPlayer = 40f;
+
+
+    // ======================== Implementation ========================
+    private GameObject target;
 
 
     protected override IEnumerator ScanSurroundings()
@@ -25,7 +32,7 @@ public class SeekerAI : EnemyAI
         {
             List<GameObject> enemies = sensorsController.GenerateRaycasts(1);
 
-            if (enemies.Count != 0)
+            if (enemies.Count != 0 && enemyState.Value == EnemyState.Scouting)
             {
                 // Target core
                 enemyState.Value = EnemyState.Attacking;
@@ -35,7 +42,7 @@ public class SeekerAI : EnemyAI
         }
     }
 
-    private float currSwitchScoutingDirectionCooldown = 0f;
+    private float currDirectionSwitchCooldown = 0f;
     protected override IEnumerator Scouting()
     {
         float waitPerCall = 0.1f;
@@ -43,11 +50,11 @@ public class SeekerAI : EnemyAI
 
         while (true)
         {
-            if (currSwitchScoutingDirectionCooldown <= 0)
+            if (currDirectionSwitchCooldown <= 0)
             {
-                currSwitchScoutingDirectionCooldown = switchScoutingDirectionCooldown; 
+                currDirectionSwitchCooldown = Random.Range(directionSwitchCooldownRange.x, directionSwitchCooldownRange.y); 
 
-                currOffset = alternateOffsets(currOffset);
+                currOffset = AlternateOffsets(currOffset);
                 aimController.CalculateTargetRotation(playerBase.transform.position, currOffset);
             }
 
@@ -66,6 +73,7 @@ public class SeekerAI : EnemyAI
         float waitPerCall = 0.1f;
 
         spriteController.SwitchSprite("Locked on");
+        boostController.UpdateBoostState(true);
 
         while (true)
         {
@@ -81,12 +89,52 @@ public class SeekerAI : EnemyAI
 
     protected override IEnumerator Charging()
     {
-        throw new System.NotImplementedException();
+        float waitPerCall = 0.1f;
+
+        spriteController.SwitchSprite("Locked on");
+        boostController.UpdateBoostState(true);
+
+        while (true)
+        {
+            aimController.CalculateTargetRotation(GetTarget().transform.position);
+            aimController.ApplyRotation(waitPerCall);
+
+            moveController.UpdateMoveDirection(Vector2.up);
+            moveController.Move();
+
+            yield return new WaitForSeconds(waitPerCall);
+        }
     }
 
     protected override IEnumerator Retreating()
     {
-        throw new System.NotImplementedException();
+        // Here, "target" refers to the player ship we want to run away from
+        float waitPerCall = 0.1f;
+
+        while (true)
+        {
+            // Calculate necessary vectors
+            Vector2 towardsBase = (playerBase.transform.position - transform.position).normalized;
+            Vector2 perpendicularToBase = new Vector2(-towardsBase.y, towardsBase.x).normalized;
+            Vector2 toPlayer = (GetTarget().transform.position - transform.position).normalized;
+
+            // Pick the better perpendicular direction (one that allows this ship to move away from the player/target)
+            if (Vector2.Dot(perpendicularToBase, toPlayer) > 0)
+            {
+                perpendicularToBase = -perpendicularToBase;
+            }
+
+            // Aim
+            perpendicularToBase += (Vector2) transform.position; // Offset normalized vector from current ships position, so CalculateTargetRotation() can work as intended
+            aimController.CalculateTargetRotation(perpendicularToBase);
+            aimController.ApplyRotation(waitPerCall);
+            
+            // Move
+            moveController.UpdateMoveDirection(Vector2.up);
+            moveController.Move();
+
+            yield return new WaitForSeconds(waitPerCall);
+        }
     }
 
     
@@ -102,7 +150,17 @@ public class SeekerAI : EnemyAI
         playerBase = GameObject.FindGameObjectWithTag("Core");
     }
 
-    private float alternateOffsets(float currOffset)
+    private GameObject GetTarget()
+    {
+        if (target == null)
+        {
+            target = playerBase;
+        }
+
+        return target;
+    }
+
+    private float AlternateOffsets(float currOffset)
     {
         if (currOffset == 45f)
         {
@@ -113,7 +171,36 @@ public class SeekerAI : EnemyAI
         }
     }
 
+    private void OnServerHit(ServerProjectile sp)
+    {
+        // Health low enough, so charge at player
+        if (health.currentHealth.Value <= healthThresholdToChargeAtPlayer)
+        {
+            target = sp.GetProjectileData().owner;
+            enemyState.Value = EnemyState.Charging;
+        }
+        // else try and move away from the player whilst repositioning for a better angle at the core 
+        else
+        {
+            target = sp.GetProjectileData().owner;
+            enemyState.Value = EnemyState.Retreating;
+        }
+
+    }
+
     // ======================= Runtime Methods =======================
+    private void OnEnable()
+    {
+        hitController.OnServerHit += OnServerHit;
+    }
+
+    private void OnDisable()
+    {
+        hitController.OnServerHit -= OnServerHit;
+    }
+
+
+
     /// <summary>
     /// Initializes the AI by finding and caching the player base reference.
     /// </summary>
@@ -124,9 +211,9 @@ public class SeekerAI : EnemyAI
 
     private void Update()
     {
-        if (currSwitchScoutingDirectionCooldown > 0)
+        if (currDirectionSwitchCooldown > 0)
         {
-            currSwitchScoutingDirectionCooldown -= Time.deltaTime;
+            currDirectionSwitchCooldown -= Time.deltaTime;
         }
     }
 }
