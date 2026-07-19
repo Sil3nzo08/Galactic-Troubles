@@ -7,8 +7,8 @@ using UnityEngine;
 /// Detects projectile collisions and handles damage, effects, and event notifications.
 /// </summary>
 /// <remarks>
-/// Responds to both client-side visual projectiles and server-side authoritative projectiles.
-/// Applies hit effects, reduces health, and fires events to notify subscribers of impacts.
+/// Responds to trigger collisions from client-side visual projectiles, server-side authoritative projectiles,
+/// and kamikaze-style ships. It applies visual effects, reduces health, and raises hit events for subscribers.
 /// </remarks>
 public class HitController : MonoBehaviour
 {
@@ -28,13 +28,20 @@ public class HitController : MonoBehaviour
     public event Action<ClientProjectile> OnClientHit;
 
     /// <summary>
-    /// Handles collision detection for projectiles entering the trigger zone.
+    /// Fired when a kamikaze ship collides with this object.
+    /// Subscribers receive the kamikaze ship that caused the impact.
     /// </summary>
+    public event Action<KamikazeShip> OnKamikazeHit;
+
+    /// <summary>
+    /// Handles triggers entered by projectile objects and applies the appropriate response.
+    /// </summary>
+    /// <param name="other">The collider that entered the trigger zone.</param>
     /// <remarks>
-    /// For client projectiles: applies visual effects and despawns the projectile.
-    /// For server projectiles: applies damage, despawns, and fires the server hit event.
+    /// If the entering object is a client projectile, the controller applies its hit effect and despawns it.
+    /// If it is a server projectile, the controller applies damage, despawns it, and raises the server hit event.
+    /// If it is a kamikaze ship, the controller applies damage and triggers its explosion logic.
     /// </remarks>
-    /// <param name="other">Collider of the object entering the trigger.</param>
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.attachedRigidbody.TryGetComponent(out ClientProjectile cp)) 
@@ -53,6 +60,18 @@ public class HitController : MonoBehaviour
             sp.Despawn();    
 
             OnServerHit?.Invoke(sp);
+        }
+
+        if (other.attachedRigidbody.TryGetComponent(out KamikazeShip kp))
+        {
+            // This gameObject takes damage from kamikaze attack
+            ProjectileData data = kp.GetProjectileData();
+            health.TakeDamage(data.damage);
+            
+            // Make that kamikaze projectile explode
+            kp.Explode();
+
+            OnKamikazeHit?.Invoke(kp);
         }
     }
 }
